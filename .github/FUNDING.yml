@@ -1,0 +1,41 @@
+# ============================================================
+# 🌟 FUNDING CONFIGURATION for Tree Select Plugin for Oracle APEX
+# Developed by Mohammad Alquran — OracleUniverse.cloud
+# ------------------------------------------------------------
+# This file controls which donation and sponsorship options
+# appear in the GitHub "Sponsor" button.
+# ============================================================
+
+# GitHub Sponsors (optional, for direct GitHub-based contributions)
+github: []
+
+# Other funding platforms (optional — add later if you use them)
+patreon:
+open_collective:
+ko_fi:
+tidelift:
+community_bridge:
+liberapay:
+issuehunt:
+lfx_crowdfunding:
+polar:
+buy_me_a_coffee:
+thanks_dev:
+
+# ------------------------------------------------------------
+# Custom Donation Links
+# You can list up to 4 custom links here.
+# Each entry must be a valid HTTPS URL.
+# GitHub displays these under the “Sponsor” button in your repo.
+# ------------------------------------------------------------
+
+custom:
+  - "https://paypal.me/mtmnq"  # ☕ Donate via PayPal – Support ongoing Tree Select Plugin development
+  - "https://oracleuniverse.cloud"      # 🌐 Project website and updates
+
+# ------------------------------------------------------------
+# Notes:
+# • You can include multiple funding methods for flexibility.
+# • Only URLs are rendered by GitHub, but these comments help future maintainers.
+# • Descriptive text appears here in YAML comments (not shown on GitHub UI).
+# ============================================================
