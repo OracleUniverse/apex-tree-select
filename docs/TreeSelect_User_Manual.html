@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Tree Select Plugin for Oracle APEX – User Manual</title>
+  <style>
+    :root {
+      --bg: #f4f5fb;
+      --bg-panel: #ffffff;
+      --border: #d0d4e4;
+      --text: #111827;
+      --muted: #4b5563;
+      --accent: #16a34a;
+      --accent-soft: #dcfce7;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+                   Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    body {
+      padding: 24px;
+    }
+    .doc-shell {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: var(--bg-panel);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+      padding: 28px 32px 40px;
+    }
+    header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 16px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .meta {
+      max-width: 70%;
+    }
+    h1 {
+      margin: 0 0 6px;
+      font-size: 1.7rem;
+    }
+    .subtitle {
+      margin: 0 0 4px;
+      font-size: 0.98rem;
+      color: var(--muted);
+    }
+    .version {
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-right: 6px;
+    }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+    .btn {
+      border: 1px solid var(--border);
+      background: #fff;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--muted);
+      transition: background 0.15s ease, border-color 0.15s ease,
+                  transform 0.05s ease, box-shadow 0.15s ease;
+    }
+    .btn span.icon { font-size: 0.9rem; }
+    .btn.primary {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn:hover {
+      background: #f9fafb;
+      border-color: var(--accent);
+      box-shadow: 0 2px 8px rgba(148, 163, 184, 0.4);
+      transform: translateY(-1px);
+    }
+    .btn.primary:hover {
+      background: #15803d;
+    }
+
+    main {
+      font-size: 0.96rem;
+    }
+    section {
+      margin-bottom: 18px;
+    }
+    h2 {
+      margin: 0 0 4px;
+      margin-top: 18px;
+      font-size: 1.1rem;
+    }
+    p {
+      margin: 6px 0 6px;
+      color: var(--text);
+    }
+    ul, ol {
+      margin: 6px 0 6px 20px;
+      padding-left: 0;
+    }
+    li { margin: 2px 0; }
+    code {
+      font-family: "SF Mono", Consolas, Menlo, Monaco, monospace;
+      font-size: 0.86rem;
+      background: #e5e7eb;
+      padding: 1px 4px;
+      border-radius: 3px;
+    }
+    .note {
+      border-left: 3px solid var(--accent);
+      background: #f9fafb;
+      padding: 8px 10px;
+      margin: 6px 0 10px;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+    @media print {
+      body {
+        padding: 0;
+        background: #fff;
+      }
+      .doc-shell {
+        box-shadow: none;
+        border-radius: 0;
+        border: none;
+      }
+      header .actions {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="doc-shell">
+    <header>
+      <div class="meta">
+        <h1>Tree Select Plugin for Oracle APEX</h1>
+        <p class="subtitle"><span class="badge">User Manual</span> Developed by MOHAMMAD ALQURAN</p>
+        <p class="version">Version 1.0 – November 2025</p>
+      </div>
+      <div class="actions">
+        <button class="btn primary" onclick="window.print()">
+          <span class="icon">🖨️</span><span>Export as PDF (Print)</span>
+        </button>
+        <button class="btn" onclick="exportWord('user-doc-content','TreeSelect_User_Manual')">
+          <span class="icon">📝</span><span>Export as Word</span>
+        </button>
+      </div>
+    </header>
+
+    <main id="user-doc-content">
+      <section>
+        <h2>1. Introduction</h2>
+        <p>
+          The <strong>Tree Select Plugin for Oracle APEX</strong> lets you display a
+          hierarchical tree with checkboxes inside a region. End-users can expand and
+          collapse branches, check or uncheck items, search by label, and have their
+          selection stored in a page item for use in reports, charts, and processes.
+        </p>
+        <p>
+          This manual is aimed at APEX developers who want to add the plugin to their
+          applications, configure it, and understand how to integrate it with other
+          components using Dynamic Actions and CSS.
+        </p>
+      </section>
+
+      <section>
+        <h2>2. Installing the Plugin</h2>
+        <ol>
+          <li>
+            In APEX, go to <strong>Shared Components &rarr; Plug-ins</strong> and import
+            the plugin export file for <em>Tree Select Plugin for Oracle APEX</em>.
+          </li>
+          <li>
+            Upload the JavaScript (<code>xx_tree_select.js</code>) and CSS
+            (<code>xx_tree_select.css</code>) files as <strong>Static Application Files</strong>.
+          </li>
+          <li>
+            In the plugin definition, reference these static files in the attributes that
+            control the JavaScript and CSS file URLs, so they are included on pages that
+            use the plugin.
+          </li>
+        </ol>
+        <p class="note">
+          After installation, the plugin becomes available as a new region type in the
+          region type selector.
+        </p>
+      </section>
+
+      <section>
+        <h2>3. Creating a Tree Select Region</h2>
+        <ol>
+          <li>Create or open a page where you want to use the tree.</li>
+          <li>Add a new region and choose <strong>Tree Select Plugin for Oracle APEX</strong> as the region type.</li>
+          <li>Give the region a clear <strong>Static ID</strong> (for example, <code>empTreeRegion</code>).</li>
+          <li>Configure the data source attributes:
+            <ul>
+              <li>
+                <strong>Static JSON</strong> &mdash; paste a JSON array of nodes with
+                <code>id</code>, <code>parentId</code> and <code>label</code>.
+              </li>
+              <li>
+                <strong>SQL / Table</strong> &mdash; supply a table or SQL query that
+                returns <code>id</code>, <code>parent_id</code>, and <code>label</code>.
+              </li>
+            </ul>
+          </li>
+          <li>
+            Set the <strong>Store Item</strong> attribute to the name of a page item
+            (e.g. <code>P10_SELECTED_NODES</code>) where the selected ids will be stored.
+          </li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>4. Configuring Plugin Attributes</h2>
+        <p>In the plugin region attributes, you&apos;ll find options like:</p>
+        <ul>
+          <li><strong>Allow Parent Selection</strong> &mdash; can parent nodes be checked?</li>
+          <li><strong>Allow Leaf Selection</strong> &mdash; can leaf nodes be checked?</li>
+          <li><strong>Tri-State</strong> &mdash; should parents show a mixed (indeterminate) state when children differ?</li>
+          <li><strong>Default Expand Level</strong> &mdash; how many levels to open initially (e.g. 1 or 2).</li>
+          <li><strong>Search Mode</strong> &mdash; <code>NONE</code>, <code>CLIENT</code>, or <code>SERVER</code>.</li>
+          <li><strong>Store Format</strong> &mdash; <code>CSV</code> or <code>JSON</code>.</li>
+          <li><strong>Visual Options</strong> &mdash; compact rows, show icons, dark theme, etc.</li>
+        </ul>
+        <p>
+          Adjust these attributes to match your functional and visual requirements. Most
+          behavioral differences (e.g. tri-state vs simple checkboxes, client vs server
+          search) are controlled through these settings.
+        </p>
+      </section>
+
+      <section>
+        <h2>5. Using the Toolbar and Search</h2>
+        <p>The plugin can render a toolbar and search field, depending on your settings:</p>
+        <ul>
+          <li><strong>Search</strong> &mdash; filters nodes by their labels.</li>
+          <li><strong>Expand all / Collapse all</strong> &mdash; open or close all branches.</li>
+          <li>
+            <strong>Check all / Uncheck all</strong> &mdash; toggle all enabled nodes in the
+            current view. Holding <strong>SHIFT</strong> while clicking Check All can be configured
+            to load all children first and then apply the operation.
+          </li>
+        </ul>
+        <p>
+          Users can also click individual toggles to expand a single branch, and check or
+          uncheck a single row using the checkbox.
+        </p>
+      </section>
+
+      <section>
+        <h2>6. Understanding Selection Behavior</h2>
+        <p>
+          Each tree node can be in one of three states (when tri-state is enabled):
+        </p>
+        <ul>
+          <li><strong>Checked</strong> &mdash; the node is selected.</li>
+          <li><strong>Unchecked</strong> &mdash; the node is not selected.</li>
+          <li><strong>Mixed (indeterminate)</strong> &mdash; some children are checked and some are not.</li>
+        </ul>
+        <p>
+          The plugin stores the current selection in the page item configured as the
+          <strong>Store Item</strong>:
+        </p>
+        <ul>
+          <li>
+            If the <strong>Store Format</strong> is <code>CSV</code>, the item contains a
+            comma-separated list of selected node ids (e.g. <code>10,20,30</code>).
+          </li>
+          <li>
+            If the format is <code>JSON</code>, the item contains a JSON array of ids
+            (e.g. <code>["10","20","30"]</code>).
+          </li>
+        </ul>
+        <p class="note">
+          You can use this item in report filters, processes, validations, or any
+          server-side logic that needs to know which nodes are selected.
+        </p>
+      </section>
+
+      <section>
+        <h2>7. Using Dynamic Actions</h2>
+        <p>
+          Dynamic Actions (DAs) make the tree interactive with the rest of your page. Common patterns:
+        </p>
+        <ul>
+          <li>
+            <strong>DA on item change</strong> &mdash; create a DA that fires when the store
+            item value changes (e.g. <code>P10_SELECTED_NODES</code>), and have it refresh
+            a report region or chart.
+          </li>
+          <li>
+            <strong>DA on custom event</strong> &mdash; if you have JavaScript code that
+            triggers a custom event when the selection changes, you can define a DA
+            that responds to that event on the tree region.
+          </li>
+          <li>
+            <strong>DA on region refresh</strong> &mdash; after the tree region is refreshed
+            (for example, after a submit), you can re-run your setup or perform other logic.
+          </li>
+        </ul>
+        <p>
+          Combined with the tree, these patterns enable faceted search: users choose
+          categories in the tree, and your reports automatically refresh to show
+          matching rows.
+        </p>
+      </section>
+
+      <section>
+        <h2>8. Styling and Customizing the Look</h2>
+        <p>
+          The Tree Select plugin uses its own CSS file to define default styling, but
+          you remain in control of the final appearance:
+        </p>
+        <ul>
+          <li>Adjust colors to match your application theme.</li>
+          <li>Change row spacing or font size to create a compact or relaxed layout.</li>
+          <li>Customize connector lines between nodes.</li>
+          <li>Add accent classes to mark important nodes with colored bars or icons.</li>
+        </ul>
+        <p>
+          To override styles, add your CSS either in the page CSS or in a shared application
+          CSS file. Make sure your overrides load <em>after</em> the plugin CSS so they take effect.
+        </p>
+      </section>
+
+      <section>
+        <h2>9. Example Use Cases</h2>
+        <p>Here are some practical ways to use the Tree Select Plugin:</p>
+        <ul>
+          <li><strong>Faceted search</strong> &mdash; let users choose multiple categories or tags, then filter reports on the selected values.</li>
+          <li><strong>Security / role assignment</strong> &mdash; show privileges in a hierarchy and store the selected ones for a user or role.</li>
+          <li><strong>Organizational hierarchies</strong> &mdash; show departments and teams, and allow managers to select entire branches.</li>
+          <li><strong>Product catalogs</strong> &mdash; let users explore product categories and choose subsets for analysis or export.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>10. Troubleshooting</h2>
+        <p><strong>Tree does not appear</strong></p>
+        <ul>
+          <li>Ensure the plugin region has a Static ID and that it matches what the JavaScript expects.</li>
+          <li>Verify that the JavaScript and CSS files are referenced correctly as static files.</li>
+          <li>Confirm that your data source (JSON or SQL) returns rows.</li>
+        </ul>
+
+        <p><strong>Search behaves differently between Client and Server mode</strong></p>
+        <ul>
+          <li>
+            In SERVER mode, search uses SQL <code>LIKE</code> semantics on the server side.
+            Ensure your SQL and plugin settings (for example wildcards) are in sync.
+          </li>
+        </ul>
+
+        <p><strong>Selection is not stored in the item</strong></p>
+        <ul>
+          <li>Check that the Store Item attribute points to an existing page item.</li>
+          <li>Make sure the item is not protected or reset unintentionally by page processes.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>11. Compatibility and Upgrade Notes</h2>
+        <p>
+          The Tree Select Plugin is designed for current Oracle APEX versions using
+          Universal Theme (APEX 19.2 and newer). When you upgrade APEX:
+        </p>
+        <ul>
+          <li>Retest pages that use the plugin, especially AJAX and search.</li>
+          <li>Check for any changes in Universal Theme that affect spacing or colors.</li>
+          <li>
+            If necessary, update the plugin&apos;s PL/SQL code to use new attribute helper
+            APIs (such as <code>apex_plugin_util.get_varchar2_attribute</code>) for long-term compatibility.
+          </li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>12. Future Enhancements</h2>
+        <p>
+          Possible enhancements that may appear in future versions of the plugin include:
+        </p>
+        <ul>
+          <li>Drag-and-drop reordering of nodes.</li>
+          <li>Remembering which branches were expanded between sessions.</li>
+          <li>More context menu options (rename, delete, add child).</li>
+          <li>Additional theme presets (dense, light, high contrast).</li>
+          <li>Even tighter integration with APEX Faceted Search and Smart Filters.</li>
+        </ul>
+        <p>
+          Watch the plugin release notes or documentation for updates if these features
+          are added later.
+        </p>
+      </section>
+
+      <section>
+        <h2>13. Credits</h2>
+        <p>
+          The Tree Select Plugin for Oracle APEX and this documentation were developed
+          by <strong>MOHAMMAD ALQURAN</strong>. It is intended as a reusable building
+          block for rich hierarchical selection interfaces within APEX applications.
+        </p>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    function exportWord(containerId, fileName) {
+      var preHtml =
+        "<html xmlns:o='urn:schemas-microsoft-com:office:office' " +
+        "xmlns:w='urn:schemas-microsoft-com:office:word' " +
+        "xmlns='http://www.w3.org/TR/REC-html40'>" +
+        "<head><meta charset='utf-8'><title>" + fileName + "</title></head><body>";
+      var postHtml = "</body></html>";
+      var content = document.getElementById(containerId).innerHTML;
+      var html = preHtml + content + postHtml;
+
+      var blob = new Blob(['\ufeff', html], {
+        type: 'application/msword'
+      });
+
+      var url = URL.createObjectURL(blob);
+      var link = document.createElement('a');
+      link.href = url;
+      link.download = fileName + '.doc';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+  </script>
+</body>
+</html>
