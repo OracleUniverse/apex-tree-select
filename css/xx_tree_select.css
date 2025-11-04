@@ -1,0 +1,288 @@
+/* =======================================================================
+   Tree Checkbox Item – Polished CSS (Data-source agnostic + icons)
+   ======================================================================= */
+
+#empTreeRegion,
+#empTreeRegion_ts {
+  --ts-font-size: 14px;
+  --ts-row-gap: .125rem;
+  --ts-indent: 1rem;
+
+  --ts-text: #111827;            /* gray-900 */
+  --ts-muted: #6b7280;           /* gray-500 */
+  --ts-disabled: #9ca3af;        /* gray-400 */
+
+  --ts-bg: #ffffff;
+  --ts-bg-alt: #f9fafb;          /* gray-50 */
+  --ts-border: #e5e7eb;          /* gray-200 */
+  --ts-border-strong: #cbd5e1;   /* gray-300 */
+
+  --ts-hover: #f3f4f6;           /* gray-100 */
+  --ts-accent: #2563eb;          /* blue-600 */
+  --ts-accent-hover: #1e40af;    /* darker blue */
+  --ts-focus: rgba(37, 99, 235, .18);
+  --ts-ring: 2px;
+
+  font-size: var(--ts-font-size);
+  color: var(--ts-text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Toolbar */
+#empTreeRegion .ts-toolbar,
+#empTreeRegion_ts .ts-toolbar {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .5rem .5rem .4rem .5rem;
+  background: var(--ts-bg);
+  border-bottom: 1px solid var(--ts-border);
+}
+
+/* Search box */
+#empTreeRegion .ts-search,
+#empTreeRegion_ts .ts-search,
+#empTreeRegion [data-tree-role="search"],
+#empTreeRegion_ts [data-tree-role="search"] {
+  flex: 1 1 300px;
+  height: 2.2rem;
+  padding: 0 2rem 0 .75rem;
+  border: 1px solid var(--ts-border);
+  border-radius: .5rem;
+  background: var(--ts-bg) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' fill='none' stroke='%236b7280' stroke-width='2' viewBox='0 0 24 24'><circle cx='11' cy='11' r='7'/><path d='m21 21-4.3-4.3'/></svg>") no-repeat right .6rem center / 1rem;
+  color: var(--ts-text);
+  transition: border-color .15s, box-shadow .15s;
+}
+#empTreeRegion .ts-search:focus,
+#empTreeRegion_ts .ts-search:focus {
+  border-color: var(--ts-accent);
+  box-shadow: 0 0 0 var(--ts-ring) var(--ts-focus);
+  outline: none;
+}
+#empTreeRegion .ts-search::placeholder,
+#empTreeRegion_ts .ts-search::placeholder { color: var(--ts-muted); }
+
+/* Expand/Collapse buttons */
+#empTreeRegion .ts-expandAll,
+#empTreeRegion .ts-collapseAll,
+#empTreeRegion .ts-checkAll,     /* NEW */
+#empTreeRegion .ts-uncheckAll,   /* NEW */
+#empTreeRegion_ts .ts-expandAll,
+#empTreeRegion_ts .ts-collapseAll 
+#empTreeRegion_ts .ts-checkAll,  /* NEW */
+#empTreeRegion_ts .ts-uncheckAll /* NEW */ {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  font-size: 1.2rem;
+  border-radius: .5rem;
+  border: 1px solid var(--ts-border);
+  background: var(--ts-bg);
+  cursor: pointer;
+  color: var(--ts-text);
+  transition: all .15s ease;
+}
+#empTreeRegion .ts-expandAll:hover,
+#empTreeRegion .ts-collapseAll:hover,
+#empTreeRegion_ts .ts-expandAll:hover,
+#empTreeRegion_ts .ts-collapseAll:hover {
+  background: var(--ts-hover);
+  border-color: var(--ts-border-strong);
+}
+#empTreeRegion .ts-expandAll:focus,
+#empTreeRegion .ts-collapseAll:focus,
+#empTreeRegion_ts .ts-expandAll:focus,
+#empTreeRegion_ts .ts-collapseAll:focus {
+  border-color: var(--ts-accent);
+  box-shadow: 0 0 0 var(--ts-ring) var(--ts-focus);
+  outline: none;
+}
+#empTreeRegion .ts-expandAll:active,
+#empTreeRegion .ts-collapseAll:active,
+#empTreeRegion_ts .ts-expandAll:active,
+#empTreeRegion_ts .ts-collapseAll:active {
+  transform: scale(0.96);
+  background: color-mix(in srgb, var(--ts-accent) 12%, var(--ts-bg));
+}
+
+/* Tree container */
+#empTreeRegion .t-TreeSelect-list,
+#empTreeRegion_ts .t-TreeSelect-list {
+  border: 1px solid var(--ts-border);
+  border-radius: .5rem;
+  background: var(--ts-bg);
+  max-height: 400px;
+  overflow: auto;
+  padding-left: 0;
+}
+
+/* Nodes */
+#empTreeRegion .ts-node,
+#empTreeRegion_ts .ts-node {
+  display: block;
+  margin: .125rem 0;
+  position: relative;
+}
+#empTreeRegion .ts-label,
+#empTreeRegion_ts .ts-label {
+  display: inline-flex;
+  align-items: center;
+  gap: .375rem;
+  line-height: 1.4;
+  padding: .25rem .375rem;
+  border-radius: .375rem;
+  cursor: default;
+}
+#empTreeRegion .ts-label:hover,
+#empTreeRegion_ts .ts-label:hover { background: var(--ts-hover); }
+
+/* Toggle caret + spacer */
+#empTreeRegion .ts-toggle,
+#empTreeRegion_ts .ts-toggle {
+  width: 1rem; height: 1rem; margin-right: .125rem; border: 0; background: none; cursor: pointer; padding: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+#empTreeRegion .ts-toggle::before,
+#empTreeRegion_ts .ts-toggle::before { content: "▸"; font-size: .9rem; line-height: 1; color: var(--ts-muted); }
+#empTreeRegion li[aria-expanded="true"] > .ts-toggle::before,
+#empTreeRegion_ts li[aria-expanded="true"] > .ts-toggle::before { content: "▾"; }
+#empTreeRegion .ts-spacer,
+#empTreeRegion_ts .ts-spacer { width: 1rem; height: 1rem; display: inline-block; }
+
+/* Checkbox */
+#empTreeRegion .ts-check,
+#empTreeRegion_ts .ts-check { width: 1.05rem; height: 1.05rem; margin: 0; }
+
+/* Icon (NEW) */
+#empTreeRegion .ts-icon,
+#empTreeRegion_ts .ts-icon {
+  width: 1rem;
+  display: inline-block;
+  text-align: center;
+  opacity: .9;
+  margin-right: .15rem;
+}
+
+/* Text + badge */
+#empTreeRegion .ts-text,
+#empTreeRegion_ts .ts-text { user-select: none; white-space: nowrap; }
+#empTreeRegion .ts-badge,
+#empTreeRegion_ts .ts-badge {
+  display: inline-flex; align-items: center; border-radius: 999px; padding: 0 .4em; margin-left: .25rem;
+  font-size: .75em; line-height: 1.6; background: var(--ts-bg-alt); color: var(--ts-muted); border: 1px solid var(--ts-border);
+}
+
+/* Disabled nodes */
+#empTreeRegion .ts-node[aria-disabled="true"] .ts-label,
+#empTreeRegion_ts .ts-node[aria-disabled="true"] .ts-label { opacity: .65; cursor: not-allowed; }
+#empTreeRegion .ts-node[aria-disabled="true"] .ts-check,
+#empTreeRegion_ts .ts-node[aria-disabled="true"] .ts-check { pointer-events: none; }
+
+/* Children visibility + search highlight */
+#empTreeRegion li[aria-expanded="false"] > ul.ts-children { display: none !important; }
+#empTreeRegion ul.ts-children[hidden] { display: none !important; }
+#empTreeRegion .ts-hidden-by-search { display: none !important; }
+#empTreeRegion mark.ts-hit { background: #fde68a; border-radius: .125rem; padding: 0 .1em; }
+
+#empTreeRegion_ts li[aria-expanded="false"] > ul.ts-children { display: none !important; }
+#empTreeRegion_ts ul.ts-children[hidden] { display: none !important; }
+#empTreeRegion_ts .ts-hidden-by-search { display: none !important; }
+#empTreeRegion_ts mark.ts-hit { background: #fde68a; border-radius: .125rem; padding: 0 .1em; }
+
+/* Compact option */
+#empTreeRegion.ts-compact .ts-label,
+#empTreeRegion_ts.ts-compact .ts-label { padding: .15rem .3rem; }
+#empTreeRegion.ts-compact .t-TreeSelect-list,
+#empTreeRegion_ts.ts-compact .t-TreeSelect-list { max-height: 420px; }
+
+/* Scrollbar */
+#empTreeRegion .t-TreeSelect-list::-webkit-scrollbar,
+#empTreeRegion_ts .t-TreeSelect-list::-webkit-scrollbar { width: 10px; height: 10px; }
+#empTreeRegion .t-TreeSelect-list::-webkit-scrollbar-thumb,
+#empTreeRegion_ts .t-TreeSelect-list::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 999px; }
+#empTreeRegion .t-TreeSelect-list::-webkit-scrollbar-thumb:hover,
+#empTreeRegion_ts .t-TreeSelect-list::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+/* Busy state: progress cursor + optional overlay */
+#empTreeRegion.is-busy,
+#empTreeRegion_ts.is-busy { cursor: progress; }
+/* Ensure the region can host an absolute overlay */
+.t-TreeSelect { position: relative; }
+
+/* Dimmer overlay shown during long client-side operations */
+.ts-busyOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.4);
+  z-index: 999;
+}
+
+/* Progress cursor while busy */
+.t-TreeSelect.is-busy { cursor: progress; }
+/* Hide icon spans when has-icons is false */
+.t-TreeSelect[data-has-icons="false"] .ts-icon {
+  display: none !important;
+}
+
+/* Optional: adjust label alignment when icons are hidden */
+.t-TreeSelect[data-has-icons="false"] .ts-label {
+  margin-left: 0;
+}
+
+.ts-toolbar .ts-checkAll,
+.ts-toolbar .ts-uncheckAll{
+  align-items:center; justify-content:center;
+  width:28px; height:28px; margin-inline-start:.25rem;
+  border-radius:6px; border:1px solid var(--ut-component-border, #e5e7eb);
+  background:var(--ut-component-bg, #fff); cursor:pointer;
+}
+.ts-toolbar .ts-checkAll:hover,
+.ts-toolbar .ts-uncheckAll:hover { background:#f3f4f6; }
+/* --- lightweight context menu --- */
+.ts-menu {
+  position: fixed; z-index: 999999; min-width: 220px;
+  background: #fff; border: 1px solid #e5e7eb; border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.12); padding: 6px; display: none;
+}
+.ts-menu .ts-mi {
+  display: flex; align-items: center; gap: .5rem;
+  padding: 8px 12px; border-radius: 8px; cursor: pointer; user-select: none;
+}
+.ts-menu .ts-mi:hover { background:#f3f4f6; }
+
+/* overlay centers dialog with flex */
+ .ts-overlay{
+   position: absolute;          /* region-contained */
+   inset: 0;                    /* fill region */
+   background: rgba(0,0,0,.40); /* dim backdrop; dialog stays fully opaque */
+   z-index: 10000;              /* above region content */
+   display: none;               /* toggled to flex in JS */
+   align-items: center;         /* vertical center */
+   justify-content: center;     /* horizontal center */
+ }
+
+/* centered dialog panel */
+.ts-dialog{
+  position: relative;
+  max-width: 720px;
+  width: min(720px, calc(100vw - 2rem));
+  max-height: min(80vh, 900px);
+  overflow: auto;
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 20px 60px rgba(0,0,0,.2);
+  display: none;
+}
+
+.ts-dialog__hdr{
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 12px 16px; border-bottom: 1px solid #e5e7eb; font-weight:600;
+}
+.ts-dialog__body{ padding:16px; line-height:1.5; }
+.ts-dialog__close{
+  appearance:none; border:1px solid #e5e7eb; background:#fff; cursor:pointer;
+  padding:6px 12px; border-radius:8px;
+}
+.ts-dialog__close:hover{ background:#f3f4f6; }
