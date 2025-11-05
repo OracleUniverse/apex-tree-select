@@ -46,8 +46,10 @@ This plugin is designed for developers who need:
 3. **Create the region using the plugin**  
    - Add a new **Region** to your page.  
    - Region Type: **Tree Select Plugin for Oracle APEX**.  
-   - Set the region **Static ID** to:  empTreeRegion
-
+   - Set the region **Static ID** to:  
+     ```text
+     empTreeRegion
+     ```
 
 4. **Configure plugin attributes**  
    Inside the region attributes, configure at least:
