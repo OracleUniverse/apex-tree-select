@@ -550,7 +550,7 @@ function markAndTest($li) {
       $region.find('mark.ts-hit').each(function () {
         var $m = $(this); $m.replaceWith($m.text());
       });
-      renderList($list, cache.roots, 1);
+      /*renderList($list, cache.roots, 1);
       var target = Number(cfg.defaultExpand || 0);
       if (target > 0) {
         (function expandToLevelLocal($container, level, target) {
@@ -566,20 +566,45 @@ function markAndTest($li) {
             return expandToLevelLocal($region.find('ul.ts-children:not([hidden])'), level + 1, target);
           });
         })($list, 0, target);
-      }
+      }*/
     }
 
     var run = util.debounce(function () {
       var term = ($box.val() || "").trim();
       onSearchTermChanged(term);
 
+      if (!term) {
+  if (cfg.searchMode === "SERVER") {
+    // Remember which nodes are currently checked
+    var prevIds = (typeof collectCheckedIds === "function")
+      ? collectCheckedIds($region)
+      : [];
 
+    // Reload full tree, then re-apply selection
+    refreshRoots().then(function () {
+      prevIds.forEach(function (id) {
+        var $li = $region.find('li.ts-node[data-node="' + escCSS(id) + '"]');
+        if ($li.length) {
+          var cb = $li.find('> .ts-label .ts-check').get(0);
+          if (cb && !cb.checked) {
+            cb.checked = true;
+            $(cb).trigger('change');  // ensures tri-state + store is updated
+          }
+        }
+      });
+    });
+  } else {
+    restoreView();
+  }
+  return;
+}
+/*
       if (!term) {
   if (cfg.searchMode === "SERVER") { refreshRoots(); }
   else { restoreView(); }
   return;
 }
-
+*/
 
 if (cfg.searchMode === "SERVER") {
   var previouslyChecked = collectCheckedIds($region);
