@@ -1,0 +1,46 @@
+{
+  "name": "Apex Tree Select",
+  "type": "Region Plugin",
+  "internalName": "XX_TREE_SELECT",
+  "version": "1.0",
+  "author": "Mohammad Al-Quraan",
+  "email": "moh.alquraan@gmail.com",
+  "summary": "A full-featured APEX region plug-in for hierarchical tree selection with tri-state checkboxes, search, and toolbar controls.",
+  "description": "Apex Tree Select is a modern, standalone Oracle APEX region plug-in built for hierarchical selection using tri-state checkboxes. It supports client and server search, APEX Dynamic Actions, toolbar buttons (expand/collapse, check/uncheck, search), and integration with Universal Theme. Data sources include SQL Table, SQL Query, and Static JSON. It is optimized for APEX 21+ and has no external dependencies.",
+  "license": "MIT",
+  "demo": "https://oracleuniverse.cloud",
+  "previewImage": "Preview.png",
+  "repository": "https://github.com/OracleUniverse/apex-tree-select",
+  "homepage": "https://github.com/OracleUniverse/apex-tree-select",
+  "documentation": "https://github.com/OracleUniverse/apex-tree-select/tree/main/docs",
+  "support": {
+    "email": "moh.alquraan@gmail.com",
+    "whatsapp": "+962777437216",
+    "paypal": "https://paypal.me/mtmnq"
+  },
+  "apex": {
+    "minimumVersion": "21.1",
+    "maximumVersion": "24.2",
+    "isUniversalThemeCompatible": true
+  },
+  "features": [
+    "Tri-state checkboxes with parent-child sync",
+    "Client + Server search with wildcards (% and _)",
+    "Toolbar for expand/collapse/check/uncheck/search",
+    "Dynamic Actions: Changed, Search, Loaded",
+    "Multiple data sources (SQL Table, SQL Query, Static JSON)",
+    "Support for disabled nodes and icons per node",
+    "No dependencies – fully standalone JS/CSS",
+    "Theme-aware Universal Theme integration"
+  ],
+  "future": [
+    "Drag & drop node reordering",
+    "Remember expand/collapse state per user",
+    "REST data loading support"
+  ],
+  "files": {
+    "sql": "Plugin/region_type_plugin_xx_tree_select.sql",
+    "js": "js/xx_tree_select.js",
+    "css": "css/xx_tree_select.css"
+  }
+}
