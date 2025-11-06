@@ -114,8 +114,7 @@ SELECT
     label,
     is_disabled,
     icon
-FROM demo_tree
-ORDER BY parent_id, id;
+FROM demo_tree;
 ```
 
 Use this option when you want to define a **custom query**, filters, or joins.  
@@ -178,7 +177,6 @@ SELECT
     is_disabled,
     icon
 FROM demo_tree
-ORDER BY parent_id, id
 ```
 
 ### Initialization in APEX (handled automatically)
