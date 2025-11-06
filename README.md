@@ -70,6 +70,7 @@ This plugin is designed for developers who need:
 
 ---
 
+
 ## 🧱 Example Usage
 
 ### Example SQL Data Source
@@ -79,108 +80,106 @@ SELECT
     id,
     parent_id,
     label,
-    value,
-    is_disabled
-FROM demo_tree_table
-ORDER BY parent_id, id
+    is_disabled,
+    icon
+FROM demo_tree
+ORDER BY parent_id, id;
 ```
-## 🧩 Data Source Configuration
-
-Your **Tree Select Plugin** supports multiple data source types for building the hierarchical structure — including `SQL_TABLE`, `SQL_QUERY`, and `STATIC_JSON`.  
-Below are examples for both common setups.
 
 ---
 
-### 🔹 Option 1: Static JSON Data Source
+## 🧩 Data Source Configuration
 
-This is the simplest and most portable setup — ideal for testing, demos, or static hierarchies.
+Your **Tree Select Plugin** supports three main data source types for building hierarchical data:  
+`SQL_QUERY`, `SQL_TABLE`, and `STATIC_JSON`.  
+All data sources must include the following columns:
 
-**How to configure:**
-1. In the plugin region, under **Settings**, choose  
-   **Data Source Type → `STATIC_JSON`**
-2. Paste the following sample JSON into the Static Data field:
+| Column | Description |
+|---------|--------------|
+| `ID` | Unique node identifier |
+| `PARENT_ID` | Parent node ID (NULL for root nodes) |
+| `LABEL` | Text displayed in the tree node |
+| `IS_DISABLED` | `Y` or `N` — determines whether a node is selectable |
+| `ICON` | (Optional) Font Awesome icon class name for each node |
 
-```json
-[
-  { "id": 1, "parentId": null, "label": "Corporate",   "hasChildren": 1, "leaf": 0, "icon": "fa fa-building" },
-  { "id": 2, "parentId": 1,    "label": "HR",          "hasChildren": 1, "leaf": 0, "icon": "fa fa-users" },
-  { "id": 3, "parentId": 2,    "label": "Recruiting",  "hasChildren": 0, "leaf": 1, "icon": "fa fa-user-plus" },
-  { "id": 4, "parentId": 2,    "label": "Payroll",     "hasChildren": 0, "leaf": 1, "disabled": 1 },
-  { "id": 5, "parentId": 1,    "label": "IT",          "hasChildren": 1, "leaf": 0, "icon": "fa fa-desktop" },
-  { "id": 6, "parentId": 5,    "label": "Networks",    "hasChildren": 0, "leaf": 1 },
-  { "id": 7, "parentId": 5,    "label": "Security",    "hasChildren": 0, "leaf": 1, "selected": 1 },
-  { "id": 8, "parentId": null, "label": "Operations",  "hasChildren": 0, "leaf": 1 }
-]
+---
+
+### 🔹 Option 1: SQL Query Data Source
+
+**Example:**
+```sql
+SELECT
+    id,
+    parent_id,
+    label,
+    is_disabled,
+    icon
+FROM demo_tree
+ORDER BY parent_id, id;
 ```
 
-**Fields explanation:**
-| Field | Description |
-|-------|--------------|
-| `id` | Unique node identifier |
-| `parentId` | Parent node ID (null = root) |
-| `label` | Node display text |
-| `hasChildren` | 1 if the node has children |
-| `leaf` | 1 if the node is a leaf |
-| `icon` | (Optional) Font Awesome icon class |
-| `disabled` | (Optional) 1 = non-selectable node |
-| `selected` | (Optional) 1 = preselected node |
+Use this option when you want to define a **custom query**, filters, or joins.  
+The plugin automatically builds the tree structure from the ID/PARENT_ID hierarchy.
 
 ---
 
 ### 🔹 Option 2: SQL Table Data Source
 
-For dynamic or large hierarchies, use a database table.  
-This lets the plugin query rows from your schema (e.g., `DEMO_TREE`).
-
-**Example table structure:**
-```sql
-CREATE TABLE demo_tree (
-    id            NUMBER PRIMARY KEY,
-    parent_id     NUMBER,
-    label         VARCHAR2(200),
-    is_disabled   NUMBER(1),
-    icon          VARCHAR2(100)
-);
-```
-
-**Example data:**
-```sql
-INSERT INTO demo_tree (id, parent_id, label, is_disabled, icon) VALUES (1, NULL, 'Computers & Laptops', 0, 'fa fa-laptop');
-INSERT INTO demo_tree (id, parent_id, label, is_disabled, icon) VALUES (2, 1, 'Laptops', 0, 'fa fa-laptop');
-INSERT INTO demo_tree (id, parent_id, label, is_disabled, icon) VALUES (3, 2, 'Gaming Laptop', 0, 'fa fa-gamepad');
-INSERT INTO demo_tree (id, parent_id, label, is_disabled, icon) VALUES (4, 1, 'Desktops', 0, 'fa fa-desktop');
-```
-
-**APEX Region Settings:**
-
+**Configuration:**
 | Setting | Value |
 |----------|--------|
 | **Data Source Type** | `SQL_TABLE` |
-| **SQL: Table / View** | `DEMO_TREE` |
-| **SQL: ID Column** | `ID` |
-| **SQL: Parent Column** | `PARENT_ID` |
-| **SQL: Label Column** | `LABEL` |
-| **SQL: Disabled Expression** | `IS_DISABLED` |
-| **SQL: Icon Expression** | `ICON` |
+| **Table / View** | `DEMO_TREE` |
+| **ID Column** | `ID` |
+| **Parent Column** | `PARENT_ID` |
+| **Label Column** | `LABEL` |
+| **Disabled Expression** | `IS_DISABLED` |
+| **Icon Expression** | `ICON` |
 
-**Notes:**
-- The plugin automatically builds the hierarchy based on the **ID** / **Parent ID** relationship.  
-- Disabled nodes are shown but cannot be checked.  
-- If icons are provided, they will render beside each label using Font Awesome classes.
+Use this when you want to directly bind your table to the plugin without writing SQL manually.
 
 ---
 
-### 🧠 Tips
+### 🔹 Option 3: Static JSON Data Source
 
-- For performance with **large datasets**, use **Server Mode** to lazy-load branches.  
-- For client-side filtering and instant highlighting, use **Client Mode**.  
-- Each region instance should have a **unique Static ID**, e.g.:
-  ```text
-  empTreeRegion1, empTreeRegion2
-  ```
-  so that the CSS and events do not overlap between multiple trees.
+For quick demos or static hierarchies, you can paste JSON directly in the region settings.
+
+**Example:**
+```json
+[
+  { "id": 1, "parent_id": null, "label": "Corporate",   "is_disabled": "N", "icon": "fa fa-building" },
+  { "id": 2, "parent_id": 1,    "label": "HR",          "is_disabled": "N", "icon": "fa fa-users" },
+  { "id": 3, "parent_id": 2,    "label": "Recruiting",  "is_disabled": "N", "icon": "fa fa-user-plus" },
+  { "id": 4, "parent_id": 2,    "label": "Payroll",     "is_disabled": "Y", "icon": "fa fa-credit-card" },
+  { "id": 5, "parent_id": 1,    "label": "IT",          "is_disabled": "N", "icon": "fa fa-desktop" },
+  { "id": 6, "parent_id": 5,    "label": "Networks",    "is_disabled": "N", "icon": "fa fa-sitemap" },
+  { "id": 7, "parent_id": 5,    "label": "Security",    "is_disabled": "N", "icon": "fa fa-shield" },
+  { "id": 8, "parent_id": null, "label": "Operations",  "is_disabled": "N", "icon": "fa fa-cogs" }
+]
+```
 
 ---
+
+### 🧠 Notes
+
+- **Lazy loading** and **per-node icons** are fully supported.  
+- The plugin automatically disables nodes with `IS_DISABLED = 'Y'`.  
+- Each region instance must have a **unique Static ID** to avoid conflicts.  
+- Use hidden item `PXX_TREE_SELECTED` to store selected node IDs.  
+
+
+## Example SQL Data Source
+
+```sql
+SELECT
+    id,
+    parent_id,
+    label,
+    is_disabled,
+    icon
+FROM demo_tree
+ORDER BY parent_id, id
+```
 
 ### Initialization in APEX (handled automatically)
 
@@ -300,6 +299,7 @@ If you upgrade APEX, re-test the Tree Select region and update CSS if Universal 
 ---
 
 
+
 ## 🌟 Features and Capabilities Overview
 
 ### 🌳 Tree Functionality
@@ -329,7 +329,20 @@ In short, the Tree Select Plugin provides a rich, maintainable, and APEX-native 
 
 ---
 
-## 🛠 Planned / Future Enhancements
+
+## 🛠 Future Enhancements
+
+These features are planned for future versions:
+
+- 🧩 **Expand/Collapse State Memory**  
+  Remember which nodes were expanded and restore them automatically on page refresh.  
+- 🧠 **Improved Accessibility & Keyboard Navigation**  
+  Streamline focus order and add ARIA role refinements for screen readers.  
+- 🔁 **Optional Drag-and-Drop Reordering**  
+  Allow reordering of tree nodes with server-side persistence.  
+
+*(Features like lazy loading and per-node icons are already supported in this version.)*
+
 
 - Lazy loading for very large trees (load children on demand).  
 - Per-node icons based on data attributes.  
@@ -372,8 +385,4 @@ Free for personal and commercial use — attribution appreciated.
 🌐 Website: [oracleuniverse.cloud](https://oracleuniverse.cloud)  
 💌 Email: [moh.alquraan@gmail.com](mailto:moh.alquraan@gmail.com)  
 💬 WhatsApp: <https://wa.me/962777437216>
-
-
-
----
 
