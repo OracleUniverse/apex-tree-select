@@ -261,12 +261,17 @@
           consistent internal model with fields such as:
         </p>
         <ul>
-          <li><code>id</code>, <code>parentId</code></li>
-          <li><code>label</code></li>
-          <li><code>hasChildren</code> / <code>isLeaf</code></li>
-          <li><code>selected</code>, <code>disabled</code></li>
-          <li>optional <code>accent</code> or <code>icon</code> flags</li>
+          <li><code>ID</code>, <code>PARENT_ID</code> &mdash; the hierarchical relationship (root nodes have <code>PARENT_ID</code> = NULL).</li>
+          <li><code>LABEL</code> &mdash; the text displayed for each node.</li>
+          <li><code>IS_DISABLED</code> &mdash; <code>'Y'</code> or <code>'N'</code>, controls whether a node is selectable.</li>
+          <li><code>ICON</code> &mdash; optional Font Awesome icon class name for the node.</li>
         </ul>
+        <p>
+          At runtime the JavaScript module maps these columns into its internal model
+          (for example <code>id</code>, <code>parentId</code>, <code>label</code>, <code>disabled</code>, <code>icon</code> and derived
+          flags such as <code>isLeaf</code> or <code>selected</code>), but from the developer perspective
+          all data sources share the same external column contract.
+        </p>
         <p>The cache used per region typically holds:</p>
         <ul>
           <li>a map of <code>id → row</code>,</li>
@@ -485,22 +490,78 @@
         </p>
       </section>
 
+
       <section>
-        <h2>13. Future Enhancements</h2>
-        <p>Potential future enhancements for the Tree Select Plugin include:</p>
+        <h2>Features and Capabilities Overview</h2>
+        <h3>Tree Functionality</h3>
         <ul>
-          <li>Drag-and-drop reordering of nodes, with persistence through AJAX.</li>
-          <li>Persistence of expand / collapse state across sessions or page visits.</li>
-          <li>Richer context menu actions (rename, delete, add child, etc.).</li>
-          <li>Deeper integration with APEX Faceted Search and Smart Filters.</li>
-          <li>Additional accessibility tweaks (ARIA live regions, improved focus outlines).</li>
-          <li>More theme variations (compact, dense, light / dark with CSS variables).</li>
+          <li>Full tri-state checkbox tree integrated with Oracle APEX page items and Dynamic Actions.</li>
+          <li>Parent / child recompute logic that respects disabled nodes and supports mixed states.</li>
+          <li>Dynamic expand and collapse per node, plus toolbar buttons to expand/collapse all.</li>
+          <li>Client and Server search modes, both supporting SQL-style wildcards (<code>%</code> and <code>_</code>).</li>
+          <li>Shift-click style bulk operations (Check All / Uncheck All) for fast selection changes.</li>
+          <li>Optimized behavior for large data sets with optional lazy loading of child nodes.</li>
         </ul>
+
+        <h3>User Interface &amp; Styling</h3>
+        <ul>
+          <li>Toolbar with expand, collapse, check, uncheck, and search controls.</li>
+          <li>Flexible layout that supports faceted-style pages (search above, controls on the side of the tree).</li>
+          <li>Per-node icons using the <code>ICON</code> column, fully themeable via CSS.</li>
+          <li>Universal Theme–friendly colors and typography so the tree blends with the rest of the application.</li>
+          <li>Accessible markup using <code>role=&quot;tree&quot;</code>, <code>aria-expanded</code>, and <code>aria-hidden</code> where appropriate.</li>
+          <li>Self-contained dialog behavior that avoids interfering with the page&apos;s scroll or global overlays.</li>
+        </ul>
+
+        <h3>Integration &amp; Configuration</h3>
+        <ul>
+          <li>Implemented as a declarative APEX region plugin, configured entirely from the builder.</li>
+          <li>Supports the plugin&apos;s custom Dynamic Actions such as &quot;Tree Select - Changed&quot;, &quot;Tree Select - Search&quot;, and &quot;Tree Select - Loaded&quot;.</li>
+          <li>Works with multiple data source types (SQL Query, SQL Table, Static JSON, and REST-based sources via APEX).</li>
+          <li>Designed for modern APEX 21+ with Universal Theme, and can be configured to work with older APEX versions when needed.</li>
+          <li>No external JavaScript libraries required; the plugin ships with its own JS and CSS bundle.</li>
+        </ul>
+
         <p>
-          These can be implemented incrementally while keeping the public API compatible
-          for existing applications.
+          In short, the Tree Select Plugin provides a rich, maintainable, and APEX-native way to present and manage hierarchical data with checkboxes,
+          while remaining flexible enough to adapt to many different use cases (filtering reports, faceted search, navigation trees, and more).
         </p>
       </section>
+
+
+      <section>
+                <h2>13. Future Enhancements</h2>
+        <p>These features are planned for future versions of the Tree Select Plugin:</p>
+        <ul>
+          <li><strong>Expand / Collapse State Memory</strong> &mdash; remember which branches were expanded and restore them automatically on page refresh.</li>
+          <li><strong>Improved Accessibility &amp; Keyboard Navigation</strong> &mdash; refine focus order and ARIA usage for screen readers.</li>
+          <li><strong>Optional Drag-and-Drop Reordering</strong> &mdash; allow reordering of nodes with persistence through AJAX.</li>
+        </ul>
+        <p>
+          Features such as lazy loading of child nodes and per-node icons from the <code>ICON</code> column
+          are already supported in the current version.
+        </p>
+    
+      
+
+    
+      <footer class="ts-footer">
+        <hr>
+        <p>
+          <strong>Tree Select Plugin for Oracle APEX</strong><br>
+          Developed by <strong>Mohammad Alquran</strong><br>
+          Contact: <a href="mailto:moh.alquraan@gmail.com">moh.alquraan@gmail.com</a>
+        </p>
+        <p>
+          <a href="https://paypal.me/mtmnq" target="_blank">
+            <img src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif"
+                 alt="Donate with PayPal" style="height:40px;border:none;">
+          </a>
+          &nbsp;&nbsp;
+          <a href="https://wa.me/962777437216" target="_blank">💬 Chat on WhatsApp</a>
+        </p>
+      </footer>
+
     </main>
   </div>
 

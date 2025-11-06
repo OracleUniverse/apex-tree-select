@@ -202,9 +202,9 @@
             (<code>xx_tree_select.css</code>) files as <strong>Static Application Files</strong>.
           </li>
           <li>
-            In the plugin definition, reference these static files in the attributes that
-            control the JavaScript and CSS file URLs, so they are included on pages that
-            use the plugin.
+            In the plugin definition, ensure the JavaScript File URL and CSS File URL attributes point to the plugin files
+            (for example <code>#PLUGIN_FILES#xx_tree_select.js</code> and <code>#PLUGIN_FILES#xx_tree_select.css</code>),
+            so they are automatically included on pages that use the plugin.
           </li>
         </ol>
         <p class="note">
@@ -366,16 +366,16 @@
         <h2>10. Troubleshooting</h2>
         <p><strong>Tree does not appear</strong></p>
         <ul>
-          <li>Ensure the plugin region has a Static ID and that it matches what the JavaScript expects.</li>
-          <li>Verify that the JavaScript and CSS files are referenced correctly as static files.</li>
+          <li>Give the plugin region a Static ID (for example <code>empTreeRegion</code>) so you can target it from custom CSS or Dynamic Actions. The plugin does not require a specific Static ID, but each region should have a unique one.</li>
+          <li>Verify that the JavaScript and CSS files are referenced correctly as plugin files (for example via <code>#PLUGIN_FILES#</code> URLs).</li>
           <li>Confirm that your data source (JSON or SQL) returns rows.</li>
         </ul>
 
-        <p><strong>Search behaves differently between Client and Server mode</strong></p>
+        <p><strong>Search and wildcards in Client vs Server mode</strong></p>
         <ul>
           <li>
-            In SERVER mode, search uses SQL <code>LIKE</code> semantics on the server side.
-            Ensure your SQL and plugin settings (for example wildcards) are in sync.
+            In SERVER mode, search uses SQL <code>LIKE</code> semantics on the server side, and in CLIENT mode the plugin emulates the same behavior in JavaScript.
+            Wildcards <code>%</code> (any sequence of characters) and <code>_</code> (single character) are supported consistently in both modes, so users can rely on the same pattern rules regardless of configuration.
           </li>
         </ul>
 
@@ -402,23 +402,59 @@
         </ul>
       </section>
 
+
       <section>
-        <h2>12. Future Enhancements</h2>
+        <h2>Features and Capabilities Overview</h2>
+        <h3>Tree Functionality</h3>
+        <ul>
+          <li>Full tri-state checkbox tree integrated with Oracle APEX page items and Dynamic Actions.</li>
+          <li>Parent / child recompute logic that respects disabled nodes and supports mixed states.</li>
+          <li>Dynamic expand and collapse per node, plus toolbar buttons to expand/collapse all.</li>
+          <li>Client and Server search modes, both supporting SQL-style wildcards (<code>%</code> and <code>_</code>).</li>
+          <li>Shift-click style bulk operations (Check All / Uncheck All) for fast selection changes.</li>
+          <li>Optimized behavior for large data sets with optional lazy loading of child nodes.</li>
+        </ul>
+
+        <h3>User Interface &amp; Styling</h3>
+        <ul>
+          <li>Toolbar with expand, collapse, check, uncheck, and search controls.</li>
+          <li>Flexible layout that supports faceted-style pages (search above, controls on the side of the tree).</li>
+          <li>Per-node icons using the <code>ICON</code> column, fully themeable via CSS.</li>
+          <li>Universal Theme–friendly colors and typography so the tree blends with the rest of the application.</li>
+          <li>Accessible markup using <code>role=&quot;tree&quot;</code>, <code>aria-expanded</code>, and <code>aria-hidden</code> where appropriate.</li>
+          <li>Self-contained dialog behavior that avoids interfering with the page&apos;s scroll or global overlays.</li>
+        </ul>
+
+        <h3>Integration &amp; Configuration</h3>
+        <ul>
+          <li>Implemented as a declarative APEX region plugin, configured entirely from the builder.</li>
+          <li>Supports the plugin&apos;s custom Dynamic Actions such as &quot;Tree Select - Changed&quot;, &quot;Tree Select - Search&quot;, and &quot;Tree Select - Loaded&quot;.</li>
+          <li>Works with multiple data source types (SQL Query, SQL Table, Static JSON, and REST-based sources via APEX).</li>
+          <li>Designed for modern APEX 21+ with Universal Theme, and can be configured to work with older APEX versions when needed.</li>
+          <li>No external JavaScript libraries required; the plugin ships with its own JS and CSS bundle.</li>
+        </ul>
+
+        <p>
+          In short, the Tree Select Plugin provides a rich, maintainable, and APEX-native way to present and manage hierarchical data with checkboxes,
+          while remaining flexible enough to adapt to many different use cases (filtering reports, faceted search, navigation trees, and more).
+        </p>
+      </section>
+
+
+      <section>
+                <h2>12. Future Enhancements</h2>
         <p>
           Possible enhancements that may appear in future versions of the plugin include:
         </p>
         <ul>
-          <li>Drag-and-drop reordering of nodes.</li>
-          <li>Remembering which branches were expanded between sessions.</li>
-          <li>More context menu options (rename, delete, add child).</li>
-          <li>Additional theme presets (dense, light, high contrast).</li>
-          <li>Even tighter integration with APEX Faceted Search and Smart Filters.</li>
+          <li><strong>Expand / Collapse State Memory</strong> &mdash; remember which branches were expanded between sessions and restore them automatically.</li>
+          <li><strong>Improved Accessibility &amp; Keyboard Navigation</strong> &mdash; additional ARIA refinements and keyboard shortcuts.</li>
+          <li><strong>Optional Drag-and-Drop Reordering</strong> &mdash; interactively re-order nodes with server persistence.</li>
         </ul>
         <p>
-          Watch the plugin release notes or documentation for updates if these features
-          are added later.
+          Features such as lazy loading for large trees and per-node icons (from the <code>ICON</code> column)
+          are already available in the current version.
         </p>
-      </section>
 
       <section>
         <h2>13. Credits</h2>
@@ -428,6 +464,27 @@
           block for rich hierarchical selection interfaces within APEX applications.
         </p>
       </section>
+    
+      
+
+    
+      <footer class="ts-footer">
+        <hr>
+        <p>
+          <strong>Tree Select Plugin for Oracle APEX</strong><br>
+          Developed by <strong>Mohammad Alquran</strong><br>
+          Contact: <a href="mailto:moh.alquraan@gmail.com">moh.alquraan@gmail.com</a>
+        </p>
+        <p>
+          <a href="https://paypal.me/mtmnq" target="_blank">
+            <img src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif"
+                 alt="Donate with PayPal" style="height:40px;border:none;">
+          </a>
+          &nbsp;&nbsp;
+          <a href="https://wa.me/962777437216" target="_blank">💬 Chat on WhatsApp</a>
+        </p>
+      </footer>
+
     </main>
   </div>
 
