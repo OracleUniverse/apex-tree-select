@@ -84,6 +84,103 @@ SELECT
 FROM demo_tree_table
 ORDER BY parent_id, id
 ```
+## 🧩 Data Source Configuration
+
+Your **Tree Select Plugin** supports multiple data source types for building the hierarchical structure — including `SQL_TABLE`, `SQL_QUERY`, and `STATIC_JSON`.  
+Below are examples for both common setups.
+
+---
+
+### 🔹 Option 1: Static JSON Data Source
+
+This is the simplest and most portable setup — ideal for testing, demos, or static hierarchies.
+
+**How to configure:**
+1. In the plugin region, under **Settings**, choose  
+   **Data Source Type → `STATIC_JSON`**
+2. Paste the following sample JSON into the Static Data field:
+
+```json
+[
+  { "id": 1, "parentId": null, "label": "Corporate",   "hasChildren": 1, "leaf": 0, "icon": "fa fa-building" },
+  { "id": 2, "parentId": 1,    "label": "HR",          "hasChildren": 1, "leaf": 0, "icon": "fa fa-users" },
+  { "id": 3, "parentId": 2,    "label": "Recruiting",  "hasChildren": 0, "leaf": 1, "icon": "fa fa-user-plus" },
+  { "id": 4, "parentId": 2,    "label": "Payroll",     "hasChildren": 0, "leaf": 1, "disabled": 1 },
+  { "id": 5, "parentId": 1,    "label": "IT",          "hasChildren": 1, "leaf": 0, "icon": "fa fa-desktop" },
+  { "id": 6, "parentId": 5,    "label": "Networks",    "hasChildren": 0, "leaf": 1 },
+  { "id": 7, "parentId": 5,    "label": "Security",    "hasChildren": 0, "leaf": 1, "selected": 1 },
+  { "id": 8, "parentId": null, "label": "Operations",  "hasChildren": 0, "leaf": 1 }
+]
+```
+
+**Fields explanation:**
+| Field | Description |
+|-------|--------------|
+| `id` | Unique node identifier |
+| `parentId` | Parent node ID (null = root) |
+| `label` | Node display text |
+| `hasChildren` | 1 if the node has children |
+| `leaf` | 1 if the node is a leaf |
+| `icon` | (Optional) Font Awesome icon class |
+| `disabled` | (Optional) 1 = non-selectable node |
+| `selected` | (Optional) 1 = preselected node |
+
+---
+
+### 🔹 Option 2: SQL Table Data Source
+
+For dynamic or large hierarchies, use a database table.  
+This lets the plugin query rows from your schema (e.g., `DEMO_TREE`).
+
+**Example table structure:**
+```sql
+CREATE TABLE demo_tree (
+    id            NUMBER PRIMARY KEY,
+    parent_id     NUMBER,
+    label         VARCHAR2(200),
+    is_disabled   NUMBER(1),
+    icon          VARCHAR2(100)
+);
+```
+
+**Example data:**
+```sql
+INSERT INTO demo_tree (id, parent_id, label, is_disabled, icon) VALUES (1, NULL, 'Computers & Laptops', 0, 'fa fa-laptop');
+INSERT INTO demo_tree (id, parent_id, label, is_disabled, icon) VALUES (2, 1, 'Laptops', 0, 'fa fa-laptop');
+INSERT INTO demo_tree (id, parent_id, label, is_disabled, icon) VALUES (3, 2, 'Gaming Laptop', 0, 'fa fa-gamepad');
+INSERT INTO demo_tree (id, parent_id, label, is_disabled, icon) VALUES (4, 1, 'Desktops', 0, 'fa fa-desktop');
+```
+
+**APEX Region Settings:**
+
+| Setting | Value |
+|----------|--------|
+| **Data Source Type** | `SQL_TABLE` |
+| **SQL: Table / View** | `DEMO_TREE` |
+| **SQL: ID Column** | `ID` |
+| **SQL: Parent Column** | `PARENT_ID` |
+| **SQL: Label Column** | `LABEL` |
+| **SQL: Disabled Expression** | `IS_DISABLED` |
+| **SQL: Icon Expression** | `ICON` |
+
+**Notes:**
+- The plugin automatically builds the hierarchy based on the **ID** / **Parent ID** relationship.  
+- Disabled nodes are shown but cannot be checked.  
+- If icons are provided, they will render beside each label using Font Awesome classes.
+
+---
+
+### 🧠 Tips
+
+- For performance with **large datasets**, use **Server Mode** to lazy-load branches.  
+- For client-side filtering and instant highlighting, use **Client Mode**.  
+- Each region instance should have a **unique Static ID**, e.g.:
+  ```text
+  empTreeRegion1, empTreeRegion2
+  ```
+  so that the CSS and events do not overlap between multiple trees.
+
+---
 
 ### Initialization in APEX (handled automatically)
 
@@ -245,4 +342,8 @@ Free for personal and commercial use — attribution appreciated.
 🌐 Website: [oracleuniverse.cloud](https://oracleuniverse.cloud)  
 💌 Email: [moh.alquraan@gmail.com](mailto:moh.alquraan@gmail.com)  
 💬 WhatsApp: <https://wa.me/962777437216>
+
+
+
+---
 
