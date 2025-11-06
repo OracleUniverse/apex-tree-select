@@ -1,0 +1,368 @@
+﻿<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>TreeSelect_Technical_Documentation</title></head><body>
+      <section>
+        <h2>1. Overview</h2>
+        <p>
+          The <strong>Tree Select Plugin for Oracle APEX</strong> is a reusable region plugin
+          that renders a hierarchical tree with checkboxes, tri-state support, search,
+          lazy loading, and a context menu. It is designed to work with Universal Theme
+          and can use either a static JSON data source or SQL / table-based sources via
+          the plugin's PL/SQL AJAX interface.
+        </p>
+        <p>
+          The plugin is intended mainly for scenarios where users must select
+          multiple items from a hierarchical structure, such as category trees,
+          organizational charts, or role / privilege hierarchies.
+        </p>
+      </section>
+
+      <section>
+        <h2>2. Architecture</h2>
+        <p>The plugin consists of three main layers:</p>
+        <ul>
+          <li><strong>PL/SQL package (xx_tree_select_pkg)</strong> — renders the base region markup, exposes plugin attributes, and responds to AJAX requests (load roots, load children, search, batch children).</li>
+          <li><strong>JavaScript module (xx_tree_select.js)</strong> — handles initialization, node rendering, selection and tri-state logic, bulk operations, search, and the context menu / info dialog.</li>
+          <li><strong>CSS stylesheet (xx_tree_select.css)</strong> — defines layout, colors, typography, connector lines, and optional dark theme styling.</li>
+        </ul>
+        <p>
+          Initialization is performed by a global function
+          <code>xxTreeSelectInit(cfg)</code>, which is called from the PL/SQL
+          render procedure using <code>apex_javascript.add_onload_code</code>.
+        </p>
+      </section>
+
+      <section>
+        <h2>3. Initialization &amp; Configuration</h2>
+        <p>
+          The <code>xxTreeSelectInit(cfg)</code> function receives a configuration object
+          built in PL/SQL. Important properties include:
+        </p>
+        <ul>
+          <li><code>staticId</code> — region Static ID used to locate the DOM node.</li>
+          <li><code>ajaxIdentifier</code> — plugin AJAX identifier passed to <code>apex.server.plugin</code>.</li>
+          <li><code>storeItem</code> / <code>storeFormat</code> — page item and format (<code>CSV</code> or <code>JSON</code>) to store the selection.</li>
+          <li><code>allowParent</code>, <code>allowLeaf</code>, <code>triState</code> — rules for which nodes are selectable.</li>
+          <li><code>defaultExpand</code> — number of levels to expand on initial render.</li>
+          <li><code>searchMode</code> — <code>NONE</code>, <code>CLIENT</code>, or <code>SERVER</code>.</li>
+          <li><code>hasIcons</code>, <code>compact</code>, <code>theme</code> — visual options.</li>
+        </ul>
+        <p>During initialization the script:</p>
+        <ol>
+          <li>Resolves the region DOM element by <code>staticId</code>.</li>
+          <li>Builds an in-memory cache for nodes (by id and by parent).</li>
+          <li>Loads and renders root nodes using either static JSON or AJAX.</li>
+          <li>Wires toolbar buttons (<code>.ts-expandAll</code>, <code>.ts-collapseAll</code>, <code>.ts-checkAll</code>, <code>.ts-uncheckAll</code>).</li>
+          <li>Attaches the search box and hotkeys.</li>
+          <li>Configures the context menu and info dialog.</li>
+          <li>Initializes the hidden store item to reflect the current selection.</li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>4. Data Normalization &amp; Caching</h2>
+        <p>
+          Different server-side data sources (SQL, table, static JSON) may expose slightly
+          different column names. The JavaScript layer normalizes raw rows into a
+          consistent internal model with fields such as:
+        </p>
+        <ul>
+          <li><code>ID</code>, <code>PARENT_ID</code> — the hierarchical relationship (root nodes have <code>PARENT_ID</code> = NULL).</li>
+          <li><code>LABEL</code> — the text displayed for each node.</li>
+          <li><code>IS_DISABLED</code> — <code>'Y'</code> or <code>'N'</code>, controls whether a node is selectable.</li>
+          <li><code>ICON</code> — optional Font Awesome icon class name for the node.</li>
+        </ul>
+        <p>
+          At runtime the JavaScript module maps these columns into its internal model
+          (for example <code>id</code>, <code>parentId</code>, <code>label</code>, <code>disabled</code>, <code>icon</code> and derived
+          flags such as <code>isLeaf</code> or <code>selected</code>), but from the developer perspective
+          all data sources share the same external column contract.
+        </p>
+        <p>The cache used per region typically holds:</p>
+        <ul>
+          <li>a map of <code>id → row</code>,</li>
+          <li>a map of <code>parentId → child id list</code>,</li>
+          <li>flags that indicate which nodes have been loaded from the server.</li>
+        </ul>
+        <p class="note">
+          This cache enables client-side operations like expand / collapse and client-mode
+          search without additional round trips.
+        </p>
+      </section>
+
+      <section>
+        <h2>5. Rendering &amp; Layout</h2>
+        <p>
+          Rendering is handled by helper functions that generate HTML for nodes and lists.
+          These functions build <code>&lt;li&gt;</code> elements with classes like
+          <code>ts-node</code>, plus data attributes such as <code>data-node</code>
+          (node id) and <code>data-level</code> (depth).
+        </p>
+        <p>Each node label typically contains:</p>
+        <ul>
+          <li>a toggle button, when the node has children,</li>
+          <li>a checkbox (<code>.ts-check</code>) when selection is allowed,</li>
+          <li>optional icon (<code>.ts-icon</code>) and accent strip,</li>
+          <li>a text span (<code>.ts-text</code>) where matched text can be highlighted.</li>
+        </ul>
+        <p>
+          Layout of toolbar + tree is defined in CSS (e.g. <code>.ts-layout</code>,
+          <code>.ts-rail</code>, <code>.ts-main</code>). The current design supports
+          a vertical button rail on the left and the search + tree on the right.
+        </p>
+      </section>
+
+      <section>
+        <h2>6. Selection &amp; Tri-State Logic</h2>
+        <p>
+          Selection state is reflected through a combination of checkbox properties and
+          CSS classes (<code>.is-checked</code>, <code>.is-mixed</code>).
+          The main rules:
+        </p>
+        <ul>
+          <li>Leaf nodes follow the user's direct input.</li>
+          <li>Children propagate their state upward via a helper (commonly named <code>recalcUpwards</code>).</li>
+          <li>Parents can be:
+            <ul>
+              <li><strong>checked</strong> — all checkable children are checked;</li>
+              <li><strong>unchecked</strong> — no checkable child is checked or mixed;</li>
+              <li><strong>mixed</strong> — any other combination.</li>
+            </ul>
+          </li>
+          <li>Disabled nodes are not toggled by bulk operations and are ignored when computing parent state.</li>
+        </ul>
+        <p>
+          A separate helper (commonly <code>recomputeAllFromLeaves</code>) performs a
+          bottom-up recompute of all parents after bulk operations, by sorting nodes in
+          order of depth and applying <code>recalcUpwards</code> from leaves to root.
+        </p>
+        <p>
+          After each change, the list of selected node ids is written into the store item:
+          a CSV string or JSON array, depending on configuration.
+        </p>
+      </section>
+
+      <section>
+        <h2>7. Bulk Operations</h2>
+        <p>
+          Toolbar buttons provide bulk operations:
+        </p>
+        <ul>
+          <li><strong>Expand all / Collapse all</strong> operate on the current tree structure.</li>
+          <li><strong>Check all / Uncheck all</strong> operate on enabled checkboxes only.</li>
+        </ul>
+        <p>Two behaviors exist for bulk selection:</p>
+        <ul>
+          <li>
+            <strong>Normal click</strong> — applies to the nodes currently rendered / visible.
+          </li>
+          <li>
+            <strong>SHIFT + click</strong> — can optionally preload all descendants
+            from the server (via a <code>children_batch</code> call or per-node requests)
+            before applying the bulk operation.
+          </li>
+        </ul>
+        <p>
+          After toggling the desired nodes, the script invokes a single bottom-up recompute,
+          updates the store item, and may trigger a custom event on the region so that
+          Dynamic Actions can react.
+        </p>
+      </section>
+
+      <section>
+        <h2>8. Search (Client &amp; Server Modes)</h2>
+        <p>
+          The search box (<code>.ts-search</code>) is wired by a helper function (often named
+          <code>attachSearch</code>) and supports two modes:
+        </p>
+        <h3>Client Mode</h3>
+        <ul>
+          <li>All nodes are available in the client cache.</li>
+          <li>The script filters the tree entirely in JavaScript.</li>
+          <li>
+            A helper converts SQL-like patterns (using <code>%</code> and <code>_</code>)
+            into JavaScript regular expressions so wildcard search behaves naturally.
+          </li>
+          <li>Matched segments in labels are wrapped in <code>&lt;mark class="ts-hit"&gt;</code>.</li>
+        </ul>
+
+        <h3>Server Mode</h3>
+        <ul>
+          <li>The search term is sent to the PL/SQL <code>ajax</code> procedure.</li>
+          <li>The server applies a <code>WHERE ... LIKE</code> filter to the data source.</li>
+          <li>The resulting nodes (plus ancestors) are rendered client-side.</li>
+          <li>The same highlighting logic is used so results visually match the server filter.</li>
+        </ul>
+        <p>
+          Clearing the search term restores either the full root set or the previous view,
+          depending on configuration.
+        </p>
+      </section>
+
+      <section>
+        <h2>9. PL/SQL Plugin Package</h2>
+        <p>
+          The PL/SQL package (e.g. <code>xx_tree_select_pkg</code>) implements the plugin
+          specification and body. Key responsibilities:
+        </p>
+        <ul>
+          <li>
+            <strong>render</strong> — emits the region markup (toolbar, search, empty
+            <code>&lt;ul&gt;</code>) and injects the JavaScript initialization call with
+            attribute values.
+          </li>
+          <li>
+            <strong>ajax</strong> — inspects the requested action and returns JSON
+            via <code>APEX_JSON</code>. Typical actions:
+            <ul>
+              <li><code>get_roots</code></li>
+              <li><code>get_children</code></li>
+              <li><code>search</code></li>
+              <li><code>children_batch</code> (optional optimization)</li>
+            </ul>
+          </li>
+          <li>
+            <strong>Attribute mapping</strong> — reads plugin attributes such as data
+            source type, store format and visual options using helper APIs
+            (e.g. <code>apex_plugin_util.get_varchar2_attribute</code> in newer APEX versions).
+          </li>
+        </ul>
+        <p>
+          Sample tables (like <code>demo_tree_table</code>) illustrate how to provide
+          hierarchical data through <code>id</code>, <code>parent_id</code>, and
+          <code>label</code> columns.
+        </p>
+      </section>
+
+      <section>
+        <h2>10. Dynamic Actions &amp; Events</h2>
+        <p>
+          The region can be integrated with Dynamic Actions in multiple ways:
+        </p>
+        <ul>
+          <li>DA on the underlying store item (when its value changes, refresh reports or charts).</li>
+          <li>DA on a custom event triggered by the tree (e.g., when selection changes or when a node is clicked).</li>
+          <li>Standard region events like After Refresh can be used to re-wire custom logic if necessary.</li>
+        </ul>
+        <p>
+          This enables building reactive pages, such as faceted search interfaces or dashboards that respond to selections in the tree.
+        </p>
+      </section>
+
+      <section>
+        <h2>11. Styling &amp; Theming</h2>
+        <p>
+          All markup is wrapped in a region container with classes like
+          <code>t-TreeSelect</code> and <code>ts-dark</code>. Within this, the script
+          emits structural classes such as <code>.ts-layout</code>, <code>.ts-rail</code>,
+          <code>.ts-main</code>, <code>.ts-node</code>, <code>.ts-label</code>,
+          <code>.ts-icon</code>, and <code>.ts-toggle</code>.
+        </p>
+        <p>
+          The default CSS implements a modern look with dark panel backgrounds,
+          connector lines, hover states, and optional colored accents. Since class
+          names are stable, applications can override or extend the CSS at the theme
+          or page level without modifying plugin resources.
+        </p>
+        <p class="note">
+          For large applications, consider centralizing overrides in a dedicated
+          theme style or app-level CSS file, keeping plugin upgrades simpler.
+        </p>
+      </section>
+
+      <section>
+        <h2>12. Compatibility &amp; Migration</h2>
+        <p>
+          The plugin targets Oracle APEX 19.2 and newer, using Universal Theme.
+          It relies on:
+        </p>
+        <ul>
+          <li><code>apex.server.plugin</code> for AJAX calls,</li>
+          <li>APEX plugin attribute APIs for reading configuration,</li>
+          <li>jQuery and core APEX JavaScript namespaces.</li>
+        </ul>
+        <p>
+          Newer APEX releases (e.g. 23.x, 24.x) add improved helper APIs and
+          stricter CSP settings. For long-term maintenance:
+        </p>
+        <ul>
+          <li>Consider updating attribute access code to use <code>apex_plugin_util.get_varchar2_attribute</code> and related helpers.</li>
+          <li>Verify that static file references for JS and CSS are still correct after upgrades.</li>
+          <li>Test CSS alignment with the current Universal Theme version.</li>
+        </ul>
+        <p>
+          If compatibility mode changes, re-test AJAX actions and ensure the JSON
+          shapes consumed by the JavaScript layer remain stable.
+        </p>
+      </section>
+
+
+      <section>
+        <h2>Features and Capabilities Overview</h2>
+        <h3>Tree Functionality</h3>
+        <ul>
+          <li>Full tri-state checkbox tree integrated with Oracle APEX page items and Dynamic Actions.</li>
+          <li>Parent / child recompute logic that respects disabled nodes and supports mixed states.</li>
+          <li>Dynamic expand and collapse per node, plus toolbar buttons to expand/collapse all.</li>
+          <li>Client and Server search modes, both supporting SQL-style wildcards (<code>%</code> and <code>_</code>).</li>
+          <li>Shift-click style bulk operations (Check All / Uncheck All) for fast selection changes.</li>
+          <li>Optimized behavior for large data sets with optional lazy loading of child nodes.</li>
+        </ul>
+
+        <h3>User Interface &amp; Styling</h3>
+        <ul>
+          <li>Toolbar with expand, collapse, check, uncheck, and search controls.</li>
+          <li>Flexible layout that supports faceted-style pages (search above, controls on the side of the tree).</li>
+          <li>Per-node icons using the <code>ICON</code> column, fully themeable via CSS.</li>
+          <li>Universal Theme–friendly colors and typography so the tree blends with the rest of the application.</li>
+          <li>Accessible markup using <code>role="tree"</code>, <code>aria-expanded</code>, and <code>aria-hidden</code> where appropriate.</li>
+          <li>Self-contained dialog behavior that avoids interfering with the page's scroll or global overlays.</li>
+        </ul>
+
+        <h3>Integration &amp; Configuration</h3>
+        <ul>
+          <li>Implemented as a declarative APEX region plugin, configured entirely from the builder.</li>
+          <li>Supports the plugin's custom Dynamic Actions such as "Tree Select - Changed", "Tree Select - Search", and "Tree Select - Loaded".</li>
+          <li>Works with multiple data source types (SQL Query, SQL Table, Static JSON, and REST-based sources via APEX).</li>
+          <li>Designed for modern APEX 21+ with Universal Theme, and can be configured to work with older APEX versions when needed.</li>
+          <li>No external JavaScript libraries required; the plugin ships with its own JS and CSS bundle.</li>
+        </ul>
+
+        <p>
+          In short, the Tree Select Plugin provides a rich, maintainable, and APEX-native way to present and manage hierarchical data with checkboxes,
+          while remaining flexible enough to adapt to many different use cases (filtering reports, faceted search, navigation trees, and more).
+        </p>
+      </section>
+
+
+      <section>
+                <h2>13. Future Enhancements</h2>
+        <p>These features are planned for future versions of the Tree Select Plugin:</p>
+        <ul>
+          <li><strong>Expand / Collapse State Memory</strong> — remember which branches were expanded and restore them automatically on page refresh.</li>
+          <li><strong>Improved Accessibility &amp; Keyboard Navigation</strong> — refine focus order and ARIA usage for screen readers.</li>
+          <li><strong>Optional Drag-and-Drop Reordering</strong> — allow reordering of nodes with persistence through AJAX.</li>
+        </ul>
+        <p>
+          Features such as lazy loading of child nodes and per-node icons from the <code>ICON</code> column
+          are already supported in the current version.
+        </p>
+    
+      
+
+    
+      <footer class="ts-footer">
+        <hr>
+        <p>
+          <strong>Tree Select Plugin for Oracle APEX</strong><br>
+          Developed by <strong>Mohammad Alquran</strong><br>
+          Contact: <a href="mailto:moh.alquraan@gmail.com">moh.alquraan@gmail.com</a>
+        </p>
+        <p>
+          <a href="https://paypal.me/mtmnq" target="_blank">
+            <img src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" alt="Donate with PayPal" style="height:40px;border:none;">
+          </a>
+          &nbsp;&nbsp;
+          <a href="https://wa.me/962777437216" target="_blank">💬 Chat on WhatsApp</a>
+        </p>
+      </footer>
+
+    </section></body></html>

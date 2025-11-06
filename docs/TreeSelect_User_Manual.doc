@@ -1,0 +1,311 @@
+﻿<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>TreeSelect_User_Manual</title></head><body>
+      <section>
+        <h2>1. Introduction</h2>
+        <p>
+          The <strong>Tree Select Plugin for Oracle APEX</strong> lets you display a
+          hierarchical tree with checkboxes inside a region. End-users can expand and
+          collapse branches, check or uncheck items, search by label, and have their
+          selection stored in a page item for use in reports, charts, and processes.
+        </p>
+        <p>
+          This manual is aimed at APEX developers who want to add the plugin to their
+          applications, configure it, and understand how to integrate it with other
+          components using Dynamic Actions and CSS.
+        </p>
+      </section>
+
+      <section>
+        <h2>2. Installing the Plugin</h2>
+        <ol>
+          <li>
+            In APEX, go to <strong>Shared Components → Plug-ins</strong> and import
+            the plugin export file for <em>Tree Select Plugin for Oracle APEX</em>.
+          </li>
+          <li>
+            Upload the JavaScript (<code>xx_tree_select.js</code>) and CSS
+            (<code>xx_tree_select.css</code>) files as <strong>Static Application Files</strong>.
+          </li>
+          <li>
+            In the plugin definition, ensure the JavaScript File URL and CSS File URL attributes point to the plugin files
+            (for example <code>#PLUGIN_FILES#xx_tree_select.js</code> and <code>#PLUGIN_FILES#xx_tree_select.css</code>),
+            so they are automatically included on pages that use the plugin.
+          </li>
+        </ol>
+        <p class="note">
+          After installation, the plugin becomes available as a new region type in the
+          region type selector.
+        </p>
+      </section>
+
+      <section>
+        <h2>3. Creating a Tree Select Region</h2>
+        <ol>
+          <li>Create or open a page where you want to use the tree.</li>
+          <li>Add a new region and choose <strong>Tree Select Plugin for Oracle APEX</strong> as the region type.</li>
+          <li>Give the region a clear <strong>Static ID</strong> (for example, <code>empTreeRegion</code>).</li>
+          <li>Configure the data source attributes:
+            <ul>
+              <li>
+                <strong>Static JSON</strong> — paste a JSON array of nodes with
+                <code>id</code>, <code>parentId</code> and <code>label</code>.
+              </li>
+              <li>
+                <strong>SQL / Table</strong> — supply a table or SQL query that
+                returns <code>id</code>, <code>parent_id</code>, and <code>label</code>.
+              </li>
+            </ul>
+          </li>
+          <li>
+            Set the <strong>Store Item</strong> attribute to the name of a page item
+            (e.g. <code>P10_SELECTED_NODES</code>) where the selected ids will be stored.
+          </li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>4. Configuring Plugin Attributes</h2>
+        <p>In the plugin region attributes, you'll find options like:</p>
+        <ul>
+          <li><strong>Allow Parent Selection</strong> — can parent nodes be checked?</li>
+          <li><strong>Allow Leaf Selection</strong> — can leaf nodes be checked?</li>
+          <li><strong>Tri-State</strong> — should parents show a mixed (indeterminate) state when children differ?</li>
+          <li><strong>Default Expand Level</strong> — how many levels to open initially (e.g. 1 or 2).</li>
+          <li><strong>Search Mode</strong> — <code>NONE</code>, <code>CLIENT</code>, or <code>SERVER</code>.</li>
+          <li><strong>Store Format</strong> — <code>CSV</code> or <code>JSON</code>.</li>
+          <li><strong>Visual Options</strong> — compact rows, show icons, dark theme, etc.</li>
+        </ul>
+        <p>
+          Adjust these attributes to match your functional and visual requirements. Most
+          behavioral differences (e.g. tri-state vs simple checkboxes, client vs server
+          search) are controlled through these settings.
+        </p>
+      </section>
+
+      <section>
+        <h2>5. Using the Toolbar and Search</h2>
+        <p>The plugin can render a toolbar and search field, depending on your settings:</p>
+        <ul>
+          <li><strong>Search</strong> — filters nodes by their labels.</li>
+          <li><strong>Expand all / Collapse all</strong> — open or close all branches.</li>
+          <li>
+            <strong>Check all / Uncheck all</strong> — toggle all enabled nodes in the
+            current view. Holding <strong>SHIFT</strong> while clicking Check All can be configured
+            to load all children first and then apply the operation.
+          </li>
+        </ul>
+        <p>
+          Users can also click individual toggles to expand a single branch, and check or
+          uncheck a single row using the checkbox.
+        </p>
+      </section>
+
+      <section>
+        <h2>6. Understanding Selection Behavior</h2>
+        <p>
+          Each tree node can be in one of three states (when tri-state is enabled):
+        </p>
+        <ul>
+          <li><strong>Checked</strong> — the node is selected.</li>
+          <li><strong>Unchecked</strong> — the node is not selected.</li>
+          <li><strong>Mixed (indeterminate)</strong> — some children are checked and some are not.</li>
+        </ul>
+        <p>
+          The plugin stores the current selection in the page item configured as the
+          <strong>Store Item</strong>:
+        </p>
+        <ul>
+          <li>
+            If the <strong>Store Format</strong> is <code>CSV</code>, the item contains a
+            comma-separated list of selected node ids (e.g. <code>10,20,30</code>).
+          </li>
+          <li>
+            If the format is <code>JSON</code>, the item contains a JSON array of ids
+            (e.g. <code>["10","20","30"]</code>).
+          </li>
+        </ul>
+        <p class="note">
+          You can use this item in report filters, processes, validations, or any
+          server-side logic that needs to know which nodes are selected.
+        </p>
+      </section>
+
+      <section>
+        <h2>7. Using Dynamic Actions</h2>
+        <p>
+          Dynamic Actions (DAs) make the tree interactive with the rest of your page. Common patterns:
+        </p>
+        <ul>
+          <li>
+            <strong>DA on item change</strong> — create a DA that fires when the store
+            item value changes (e.g. <code>P10_SELECTED_NODES</code>), and have it refresh
+            a report region or chart.
+          </li>
+          <li>
+            <strong>DA on custom event</strong> — if you have JavaScript code that
+            triggers a custom event when the selection changes, you can define a DA
+            that responds to that event on the tree region.
+          </li>
+          <li>
+            <strong>DA on region refresh</strong> — after the tree region is refreshed
+            (for example, after a submit), you can re-run your setup or perform other logic.
+          </li>
+        </ul>
+        <p>
+          Combined with the tree, these patterns enable faceted search: users choose
+          categories in the tree, and your reports automatically refresh to show
+          matching rows.
+        </p>
+      </section>
+
+      <section>
+        <h2>8. Styling and Customizing the Look</h2>
+        <p>
+          The Tree Select plugin uses its own CSS file to define default styling, but
+          you remain in control of the final appearance:
+        </p>
+        <ul>
+          <li>Adjust colors to match your application theme.</li>
+          <li>Change row spacing or font size to create a compact or relaxed layout.</li>
+          <li>Customize connector lines between nodes.</li>
+          <li>Add accent classes to mark important nodes with colored bars or icons.</li>
+        </ul>
+        <p>
+          To override styles, add your CSS either in the page CSS or in a shared application
+          CSS file. Make sure your overrides load <em>after</em> the plugin CSS so they take effect.
+        </p>
+      </section>
+
+      <section>
+        <h2>9. Example Use Cases</h2>
+        <p>Here are some practical ways to use the Tree Select Plugin:</p>
+        <ul>
+          <li><strong>Faceted search</strong> — let users choose multiple categories or tags, then filter reports on the selected values.</li>
+          <li><strong>Security / role assignment</strong> — show privileges in a hierarchy and store the selected ones for a user or role.</li>
+          <li><strong>Organizational hierarchies</strong> — show departments and teams, and allow managers to select entire branches.</li>
+          <li><strong>Product catalogs</strong> — let users explore product categories and choose subsets for analysis or export.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>10. Troubleshooting</h2>
+        <p><strong>Tree does not appear</strong></p>
+        <ul>
+          <li>Give the plugin region a Static ID (for example <code>empTreeRegion</code>) so you can target it from custom CSS or Dynamic Actions. The plugin does not require a specific Static ID, but each region should have a unique one.</li>
+          <li>Verify that the JavaScript and CSS files are referenced correctly as plugin files (for example via <code>#PLUGIN_FILES#</code> URLs).</li>
+          <li>Confirm that your data source (JSON or SQL) returns rows.</li>
+        </ul>
+
+        <p><strong>Search and wildcards in Client vs Server mode</strong></p>
+        <ul>
+          <li>
+            In SERVER mode, search uses SQL <code>LIKE</code> semantics on the server side, and in CLIENT mode the plugin emulates the same behavior in JavaScript.
+            Wildcards <code>%</code> (any sequence of characters) and <code>_</code> (single character) are supported consistently in both modes, so users can rely on the same pattern rules regardless of configuration.
+          </li>
+        </ul>
+
+        <p><strong>Selection is not stored in the item</strong></p>
+        <ul>
+          <li>Check that the Store Item attribute points to an existing page item.</li>
+          <li>Make sure the item is not protected or reset unintentionally by page processes.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>11. Compatibility and Upgrade Notes</h2>
+        <p>
+          The Tree Select Plugin is designed for current Oracle APEX versions using
+          Universal Theme (APEX 19.2 and newer). When you upgrade APEX:
+        </p>
+        <ul>
+          <li>Retest pages that use the plugin, especially AJAX and search.</li>
+          <li>Check for any changes in Universal Theme that affect spacing or colors.</li>
+          <li>
+            If necessary, update the plugin's PL/SQL code to use new attribute helper
+            APIs (such as <code>apex_plugin_util.get_varchar2_attribute</code>) for long-term compatibility.
+          </li>
+        </ul>
+      </section>
+
+
+      <section>
+        <h2>Features and Capabilities Overview</h2>
+        <h3>Tree Functionality</h3>
+        <ul>
+          <li>Full tri-state checkbox tree integrated with Oracle APEX page items and Dynamic Actions.</li>
+          <li>Parent / child recompute logic that respects disabled nodes and supports mixed states.</li>
+          <li>Dynamic expand and collapse per node, plus toolbar buttons to expand/collapse all.</li>
+          <li>Client and Server search modes, both supporting SQL-style wildcards (<code>%</code> and <code>_</code>).</li>
+          <li>Shift-click style bulk operations (Check All / Uncheck All) for fast selection changes.</li>
+          <li>Optimized behavior for large data sets with optional lazy loading of child nodes.</li>
+        </ul>
+
+        <h3>User Interface &amp; Styling</h3>
+        <ul>
+          <li>Toolbar with expand, collapse, check, uncheck, and search controls.</li>
+          <li>Flexible layout that supports faceted-style pages (search above, controls on the side of the tree).</li>
+          <li>Per-node icons using the <code>ICON</code> column, fully themeable via CSS.</li>
+          <li>Universal Theme–friendly colors and typography so the tree blends with the rest of the application.</li>
+          <li>Accessible markup using <code>role="tree"</code>, <code>aria-expanded</code>, and <code>aria-hidden</code> where appropriate.</li>
+          <li>Self-contained dialog behavior that avoids interfering with the page's scroll or global overlays.</li>
+        </ul>
+
+        <h3>Integration &amp; Configuration</h3>
+        <ul>
+          <li>Implemented as a declarative APEX region plugin, configured entirely from the builder.</li>
+          <li>Supports the plugin's custom Dynamic Actions such as "Tree Select - Changed", "Tree Select - Search", and "Tree Select - Loaded".</li>
+          <li>Works with multiple data source types (SQL Query, SQL Table, Static JSON, and REST-based sources via APEX).</li>
+          <li>Designed for modern APEX 21+ with Universal Theme, and can be configured to work with older APEX versions when needed.</li>
+          <li>No external JavaScript libraries required; the plugin ships with its own JS and CSS bundle.</li>
+        </ul>
+
+        <p>
+          In short, the Tree Select Plugin provides a rich, maintainable, and APEX-native way to present and manage hierarchical data with checkboxes,
+          while remaining flexible enough to adapt to many different use cases (filtering reports, faceted search, navigation trees, and more).
+        </p>
+      </section>
+
+
+      <section>
+                <h2>12. Future Enhancements</h2>
+        <p>
+          Possible enhancements that may appear in future versions of the plugin include:
+        </p>
+        <ul>
+          <li><strong>Expand / Collapse State Memory</strong> — remember which branches were expanded between sessions and restore them automatically.</li>
+          <li><strong>Improved Accessibility &amp; Keyboard Navigation</strong> — additional ARIA refinements and keyboard shortcuts.</li>
+          <li><strong>Optional Drag-and-Drop Reordering</strong> — interactively re-order nodes with server persistence.</li>
+        </ul>
+        <p>
+          Features such as lazy loading for large trees and per-node icons (from the <code>ICON</code> column)
+          are already available in the current version.
+        </p>
+
+      <section>
+        <h2>13. Credits</h2>
+        <p>
+          The Tree Select Plugin for Oracle APEX and this documentation were developed
+          by <strong>MOHAMMAD ALQURAN</strong>. It is intended as a reusable building
+          block for rich hierarchical selection interfaces within APEX applications.
+        </p>
+      </section>
+    
+      
+
+    
+      <footer class="ts-footer">
+        <hr>
+        <p>
+          <strong>Tree Select Plugin for Oracle APEX</strong><br>
+          Developed by <strong>Mohammad Alquran</strong><br>
+          Contact: <a href="mailto:moh.alquraan@gmail.com">moh.alquraan@gmail.com</a>
+        </p>
+        <p>
+          <a href="https://paypal.me/mtmnq" target="_blank">
+            <img src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" alt="Donate with PayPal" style="height:40px;border:none;">
+          </a>
+          &nbsp;&nbsp;
+          <a href="https://wa.me/962777437216" target="_blank">💬 Chat on WhatsApp</a>
+        </p>
+      </footer>
+
+    </section></body></html>
