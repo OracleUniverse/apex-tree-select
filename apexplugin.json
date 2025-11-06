@@ -1,50 +1,33 @@
 {
-  "name": "Apex Tree Select",
-  "version": "1.0.0",
-  "description": "Apex Tree Select is an Oracle APEX region plug-in that provides a tri-state checkbox tree with client/server search, toolbar controls, and Universal Theme integration.",
-  "keywords": [
-    "tree",
-    "checkbox",
-    "hierarchy",
-    "faceted search",
-    "apex"
-  ],
-  "homepage": "https://github.com/OracleUniverse/apex-tree-select",
-  "bugs": {
-    "url": "https://github.com/OracleUniverse/apex-tree-select/issues",
-    "email": "moh.alquraan@gmail.com"
+  "name" : "Apex Tree Select",
+  "version" : "1.0",
+  "description" : "Apex Tree Select is an Oracle APEX region plug-in that provides a tri-state checkbox tree with client/server search, toolbar controls, and Universal Theme integration.",
+  "keywords" : ["tree", "checkbox", "hierarchy", "faceted search", "apex"],
+  "homepage" : "https://github.com/OracleUniverse/apex-tree-select",
+  "bugs" : {
+    "url" : "https://github.com/OracleUniverse/apex-tree-select/issues",
+    "email" : "moh.alquraan@gmail.com"
   },
-  "license": "MIT",
-  "commercial": "No",
-  "author": {
-    "name": "Mohammad Al-Quraan",
-    "email": "moh.alquraan@gmail.com",
-    "url": "https://oracleuniverse.cloud/"
+  "license" : "MIT",
+  "commercial" : "No",
+  "author" : {
+    "name" : "Mohammad Al-Quraan",
+    "email" : "moh.alquraan@gmail.com",
+    "url" : "https://oracleuniverse.cloud/"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/OracleUniverse/apex-tree-select.git"
+  "repository" : {
+    "type" : "git",
+    "url" : "https://github.com/OracleUniverse/apex-tree-select.git"
   },
-  "oracle": {
-    "versions": [
-      "19.0.0.0",
-      "21.0.0.0",
-      "23.0.0.0",
-      "24.0.0.0"
-    ],
-    "apex": {
-      "versions": [
-        "21.1",
-        "22.1",
-        "23.1",
-        "24.1",
-        "24.2"
-      ],
-      "plugin": {
-        "internalName": "XX_TREE_SELECT",
-        "type": "region",
-        "demo": "https://oracleuniverse.cloud",
-        "previewImage": "https://raw.githubusercontent.com/OracleUniverse/apex-tree-select/main/Preview.png"
+ "oracle" : {
+    "versions" : ["23.0.0.0", "21.0.0.0"],
+    "apex" : {
+      "versions" : ["24.2.10"],
+      "plugin" : {
+        "internalName" : "XX_TREE_SELECT",
+        "type" : "region",
+        "demo" : "https://oracleuniverse.cloud",
+        "previewImage" : "https://raw.githubusercontent.com/OracleUniverse/apex-tree-select/main/Preview.png"
       }
     }
   }
