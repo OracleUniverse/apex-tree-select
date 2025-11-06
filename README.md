@@ -147,14 +147,14 @@ For quick demos or static hierarchies, you can paste JSON directly in the region
 **Example:**
 ```json
 [
-  { "id": 1, "parent_id": null, "label": "Corporate",   "is_disabled": "N", "icon": "fa fa-building" },
-  { "id": 2, "parent_id": 1,    "label": "HR",          "is_disabled": "N", "icon": "fa fa-users" },
-  { "id": 3, "parent_id": 2,    "label": "Recruiting",  "is_disabled": "N", "icon": "fa fa-user-plus" },
-  { "id": 4, "parent_id": 2,    "label": "Payroll",     "is_disabled": "Y", "icon": "fa fa-credit-card" },
-  { "id": 5, "parent_id": 1,    "label": "IT",          "is_disabled": "N", "icon": "fa fa-desktop" },
-  { "id": 6, "parent_id": 5,    "label": "Networks",    "is_disabled": "N", "icon": "fa fa-sitemap" },
-  { "id": 7, "parent_id": 5,    "label": "Security",    "is_disabled": "N", "icon": "fa fa-shield" },
-  { "id": 8, "parent_id": null, "label": "Operations",  "is_disabled": "N", "icon": "fa fa-cogs" }
+  { "id": 1, "parentId": null, "label": "Corporate", "hasChildren": 1, "leaf": 0, "icon": "fa fa-building" },
+  { "id": 2, "parentId": 1, "label": "HR",         "hasChildren": 1, "leaf": 0, "icon": "fa fa-users" },
+  { "id": 3, "parentId": 2, "label": "Recruiting",  "hasChildren": 0, "leaf": 1, "icon": "fa fa-user-plus" },
+  { "id": 4, "parentId": 2, "label": "Payroll",     "hasChildren": 0, "leaf": 1, "disabled": 1 },
+  { "id": 5, "parentId": 1, "label": "IT",          "hasChildren": 1, "leaf": 0, "icon": "fa fa-desktop" },
+  { "id": 6, "parentId": 5, "label": "Networks",    "hasChildren": 0, "leaf": 1 },
+  { "id": 7, "parentId": 5, "label": "Security",    "hasChildren": 0, "leaf": 1, "selected": 1 },
+  { "id": 8, "parentId": null, "label": "Operations", "hasChildren": 0, "leaf": 1 }
 ]
 ```
 
