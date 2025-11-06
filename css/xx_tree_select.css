@@ -2,7 +2,7 @@
    Tree Checkbox Item – Polished CSS (Data-source agnostic + icons)
    ======================================================================= */
 
-#empTreeRegion,
+#empTreeRegion ,
 #empTreeRegion_ts {
   --ts-font-size: 14px;
   --ts-row-gap: .125rem;
@@ -47,11 +47,12 @@
   flex: 1 1 300px;
   height: 2.2rem;
   padding: 0 2rem 0 .75rem;
-  border: 1px solid var(--ts-border);
+  border: 3px solid var(--ts-border);
   border-radius: .5rem;
   background: var(--ts-bg) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' fill='none' stroke='%236b7280' stroke-width='2' viewBox='0 0 24 24'><circle cx='11' cy='11' r='7'/><path d='m21 21-4.3-4.3'/></svg>") no-repeat right .6rem center / 1rem;
   color: var(--ts-text);
   transition: border-color .15s, box-shadow .15s;
+  font-weight: bold;
 }
 #empTreeRegion .ts-search:focus,
 #empTreeRegion_ts .ts-search:focus {
@@ -78,7 +79,7 @@
   height: 2.2rem;
   font-size: 1.2rem;
   border-radius: .5rem;
-  border: 1px solid var(--ts-border);
+  border: 3px solid var(--ts-border);
   background: var(--ts-bg);
   cursor: pointer;
   color: var(--ts-text);
@@ -110,12 +111,14 @@
 /* Tree container */
 #empTreeRegion .t-TreeSelect-list,
 #empTreeRegion_ts .t-TreeSelect-list {
-  border: 1px solid var(--ts-border);
+  border: 3px solid var(--ts-border);
   border-radius: .5rem;
-  background: var(--ts-bg);
-  max-height: 400px;
+  background: transparent;
+  max-height: 360px;
   overflow: auto;
-  padding-left: 0;
+  padding-left: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
 /* Nodes */
@@ -134,6 +137,7 @@
   padding: .25rem .375rem;
   border-radius: .375rem;
   cursor: default;
+  font-weight: bold;
 }
 #empTreeRegion .ts-label:hover,
 #empTreeRegion_ts .ts-label:hover { background: var(--ts-hover); }
@@ -207,6 +211,304 @@
 /* Busy state: progress cursor + optional overlay */
 #empTreeRegion.is-busy,
 #empTreeRegion_ts.is-busy { cursor: progress; }
+/* Ensure the region can host an absolute overlay */
+.t-TreeSelect { position: relative; }
+
+/* Dimmer overlay shown during long client-side operations */
+.ts-busyOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.4);
+  z-index: 999;
+}
+
+/* Progress cursor while busy */
+.t-TreeSelect.is-busy { cursor: progress; }
+/* Hide icon spans when has-icons is false */
+.t-TreeSelect[data-has-icons="false"] .ts-icon {
+  display: none !important;
+}
+
+/* Optional: adjust label alignment when icons are hidden */
+.t-TreeSelect[data-has-icons="false"] .ts-label {
+  margin-left: 0;
+}
+
+.ts-toolbar .ts-checkAll,
+.ts-toolbar .ts-uncheckAll{
+  align-items:center; justify-content:center;
+  width:28px; height:28px; margin-inline-start:.25rem;
+  border-radius:6px; border:1px solid var(--ut-component-border, #e5e7eb);
+  background:var(--ut-component-bg, #fff); cursor:pointer;
+}
+.ts-toolbar .ts-checkAll:hover,
+.ts-toolbar .ts-uncheckAll:hover { background:#f3f4f6; }
+/* --- lightweight context menu --- */
+.ts-menu {
+  position: fixed; z-index: 999999; min-width: 220px;
+  background: #fff; border: 1px solid #e5e7eb; border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.12); padding: 6px; display: none;
+}
+.ts-menu .ts-mi {
+  display: flex; align-items: center; gap: .5rem;
+  padding: 8px 12px; border-radius: 8px; cursor: pointer; user-select: none;
+}
+.ts-menu .ts-mi:hover { background:#f3f4f6; }
+
+/* overlay centers dialog with flex */
+ .ts-overlay{
+   position: absolute;          /* region-contained */
+   inset: 0;                    /* fill region */
+   background: rgba(0,0,0,.40); /* dim backdrop; dialog stays fully opaque */
+   z-index: 10000;              /* above region content */
+   display: none;               /* toggled to flex in JS */
+   align-items: center;         /* vertical center */
+   justify-content: center;     /* horizontal center */
+ }
+
+/* centered dialog panel */
+.ts-dialog{
+  position: relative;
+  max-width: 720px;
+  width: min(720px, calc(100vw - 2rem));
+  max-height: min(80vh, 900px);
+  overflow: auto;
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 20px 60px rgba(0,0,0,.2);
+  display: none;
+}
+
+.ts-dialog__hdr{
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 12px 16px; border-bottom: 1px solid #e5e7eb; font-weight:600;
+}
+.ts-dialog__body{ padding:16px; line-height:1.5; }
+.ts-dialog__close{
+  appearance:none; border:1px solid #e5e7eb; background:#fff; cursor:pointer;
+  padding:6px 12px; border-radius:8px;
+}
+.ts-dialog__close:hover{ background:#f3f4f6; }
+
+
+
+/*    */
+
+
+/* =======================================================================
+   Tree Checkbox Item – Polished CSS (Data-source agnostic + icons)
+   ======================================================================= */
+
+#empTreeRegion1 ,
+#empTreeRegion1_ts {
+  --ts-font-size: 14px;
+  --ts-row-gap: .125rem;
+  --ts-indent: 1rem;
+
+  --ts-text: #111827;            /* gray-900 */
+  --ts-muted: #6b7280;           /* gray-500 */
+  --ts-disabled: #9ca3af;        /* gray-400 */
+
+  --ts-bg: #ffffff;
+  --ts-bg-alt: #f9fafb;          /* gray-50 */
+  --ts-border: #e5e7eb;          /* gray-200 */
+  --ts-border-strong: #cbd5e1;   /* gray-300 */
+
+  --ts-hover: #f3f4f6;           /* gray-100 */
+  --ts-accent: #2563eb;          /* blue-600 */
+  --ts-accent-hover: #1e40af;    /* darker blue */
+  --ts-focus: rgba(37, 99, 235, .18);
+  --ts-ring: 2px;
+
+  font-size: var(--ts-font-size);
+  color: var(--ts-text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Toolbar */
+#empTreeRegion1 .ts-toolbar,
+#empTreeRegion1_ts .ts-toolbar {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .5rem .5rem .4rem .5rem;
+  background: var(--ts-bg);
+  border-bottom: 1px solid var(--ts-border);
+}
+
+/* Search box */
+#empTreeRegion1 .ts-search,
+#empTreeRegion1_ts .ts-search,
+#empTreeRegion1 [data-tree-role="search"],
+#empTreeRegion1_ts [data-tree-role="search"] {
+  flex: 1 1 300px;
+  height: 2.2rem;
+  padding: 0 2rem 0 .75rem;
+  border: 3px solid var(--ts-border);
+  border-radius: .5rem;
+  background: var(--ts-bg) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' fill='none' stroke='%236b7280' stroke-width='2' viewBox='0 0 24 24'><circle cx='11' cy='11' r='7'/><path d='m21 21-4.3-4.3'/></svg>") no-repeat right .6rem center / 1rem;
+  color: var(--ts-text);
+  transition: border-color .15s, box-shadow .15s;
+  font-weight: bold;
+}
+#empTreeRegion1 .ts-search:focus,
+#empTreeRegion1_ts .ts-search:focus {
+  border-color: var(--ts-accent);
+  box-shadow: 0 0 0 var(--ts-ring) var(--ts-focus);
+  outline: none;
+}
+#empTreeRegion1 .ts-search::placeholder,
+#empTreeRegion1_ts .ts-search::placeholder { color: var(--ts-muted); }
+
+/* Expand/Collapse buttons */
+#empTreeRegion1 .ts-expandAll,
+#empTreeRegion1 .ts-collapseAll,
+#empTreeRegion1 .ts-checkAll,     /* NEW */
+#empTreeRegion1 .ts-uncheckAll,   /* NEW */
+#empTreeRegion1_ts .ts-expandAll,
+#empTreeRegion1_ts .ts-collapseAll 
+#empTreeRegion1_ts .ts-checkAll,  /* NEW */
+#empTreeRegion1_ts .ts-uncheckAll /* NEW */ {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  font-size: 1.2rem;
+  border-radius: .5rem;
+  border: 3px solid var(--ts-border);
+  background: var(--ts-bg);
+  cursor: pointer;
+  color: var(--ts-text);
+  transition: all .15s ease;
+}
+#empTreeRegion1 .ts-expandAll:hover,
+#empTreeRegion1 .ts-collapseAll:hover,
+#empTreeRegion1_ts .ts-expandAll:hover,
+#empTreeRegion1_ts .ts-collapseAll:hover {
+  background: var(--ts-hover);
+  border-color: var(--ts-border-strong);
+}
+#empTreeRegion1 .ts-expandAll:focus,
+#empTreeRegion1 .ts-collapseAll:focus,
+#empTreeRegion1_ts .ts-expandAll:focus,
+#empTreeRegion1_ts .ts-collapseAll:focus {
+  border-color: var(--ts-accent);
+  box-shadow: 0 0 0 var(--ts-ring) var(--ts-focus);
+  outline: none;
+}
+#empTreeRegion1 .ts-expandAll:active,
+#empTreeRegion1 .ts-collapseAll:active,
+#empTreeRegion1_ts .ts-expandAll:active,
+#empTreeRegion1_ts .ts-collapseAll:active {
+  transform: scale(0.96);
+  background: color-mix(in srgb, var(--ts-accent) 12%, var(--ts-bg));
+}
+
+/* Tree container */
+#empTreeRegion1 .t-TreeSelect-list,
+#empTreeRegion1_ts .t-TreeSelect-list {
+  border: 3px solid var(--ts-border);
+  border-radius: .5rem;
+  background: transparent;
+  max-height: 360px;
+  overflow: auto;
+  padding-left: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+/* Nodes */
+#empTreeRegion1 .ts-node,
+#empTreeRegion1_ts .ts-node {
+  display: block;
+  margin: .125rem 0;
+  position: relative;
+}
+#empTreeRegion1 .ts-label,
+#empTreeRegion1_ts .ts-label {
+  display: inline-flex;
+  align-items: center;
+  gap: .375rem;
+  line-height: 1.4;
+  padding: .25rem .375rem;
+  border-radius: .375rem;
+  cursor: default;
+  font-weight: bold;
+}
+#empTreeRegion1 .ts-label:hover,
+#empTreeRegion1_ts .ts-label:hover { background: var(--ts-hover); }
+
+/* Toggle caret + spacer */
+#empTreeRegion1 .ts-toggle,
+#empTreeRegion1_ts .ts-toggle {
+  width: 1rem; height: 1rem; margin-right: .125rem; border: 0; background: none; cursor: pointer; padding: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+#empTreeRegion1 .ts-toggle::before,
+#empTreeRegion1_ts .ts-toggle::before { content: "▸"; font-size: .9rem; line-height: 1; color: var(--ts-muted); }
+#empTreeRegion1 li[aria-expanded="true"] > .ts-toggle::before,
+#empTreeRegion1_ts li[aria-expanded="true"] > .ts-toggle::before { content: "▾"; }
+#empTreeRegion1 .ts-spacer,
+#empTreeRegion1_ts .ts-spacer { width: 1rem; height: 1rem; display: inline-block; }
+
+/* Checkbox */
+#empTreeRegion1 .ts-check,
+#empTreeRegion1_ts .ts-check { width: 1.05rem; height: 1.05rem; margin: 0; }
+
+/* Icon (NEW) */
+#empTreeRegion1 .ts-icon,
+#empTreeRegion1_ts .ts-icon {
+  width: 1rem;
+  display: inline-block;
+  text-align: center;
+  opacity: .9;
+  margin-right: .15rem;
+}
+
+/* Text + badge */
+#empTreeRegion1 .ts-text,
+#empTreeRegion1_ts .ts-text { user-select: none; white-space: nowrap; }
+#empTreeRegion1 .ts-badge,
+#empTreeRegion1_ts .ts-badge {
+  display: inline-flex; align-items: center; border-radius: 999px; padding: 0 .4em; margin-left: .25rem;
+  font-size: .75em; line-height: 1.6; background: var(--ts-bg-alt); color: var(--ts-muted); border: 1px solid var(--ts-border);
+}
+
+/* Disabled nodes */
+#empTreeRegion1 .ts-node[aria-disabled="true"] .ts-label,
+#empTreeRegion1_ts .ts-node[aria-disabled="true"] .ts-label { opacity: .65; cursor: not-allowed; }
+#empTreeRegion1 .ts-node[aria-disabled="true"] .ts-check,
+#empTreeRegion1_ts .ts-node[aria-disabled="true"] .ts-check { pointer-events: none; }
+
+/* Children visibility + search highlight */
+#empTreeRegion1 li[aria-expanded="false"] > ul.ts-children { display: none !important; }
+#empTreeRegion1 ul.ts-children[hidden] { display: none !important; }
+#empTreeRegion1 .ts-hidden-by-search { display: none !important; }
+#empTreeRegion1 mark.ts-hit { background: #fde68a; border-radius: .125rem; padding: 0 .1em; }
+
+#empTreeRegion1_ts li[aria-expanded="false"] > ul.ts-children { display: none !important; }
+#empTreeRegion1_ts ul.ts-children[hidden] { display: none !important; }
+#empTreeRegion1_ts .ts-hidden-by-search { display: none !important; }
+#empTreeRegion1_ts mark.ts-hit { background: #fde68a; border-radius: .125rem; padding: 0 .1em; }
+
+/* Compact option */
+#empTreeRegion1.ts-compact .ts-label,
+#empTreeRegion1_ts.ts-compact .ts-label { padding: .15rem .3rem; }
+#empTreeRegion1.ts-compact .t-TreeSelect-list,
+#empTreeRegion1_ts.ts-compact .t-TreeSelect-list { max-height: 420px; }
+
+/* Scrollbar */
+#empTreeRegion1 .t-TreeSelect-list::-webkit-scrollbar,
+#empTreeRegion1_ts .t-TreeSelect-list::-webkit-scrollbar { width: 10px; height: 10px; }
+#empTreeRegion1 .t-TreeSelect-list::-webkit-scrollbar-thumb,
+#empTreeRegion1_ts .t-TreeSelect-list::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 999px; }
+#empTreeRegion1 .t-TreeSelect-list::-webkit-scrollbar-thumb:hover,
+#empTreeRegion1_ts .t-TreeSelect-list::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+/* Busy state: progress cursor + optional overlay */
+#empTreeRegion1.is-busy,
+#empTreeRegion1_ts.is-busy { cursor: progress; }
 /* Ensure the region can host an absolute overlay */
 .t-TreeSelect { position: relative; }
 
