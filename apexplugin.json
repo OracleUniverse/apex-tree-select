@@ -27,9 +27,10 @@
         "internalName" : "XX_TREE_SELECT",
         "type" : "region",
         "demo" : "https://oracleuniverse.cloud",
-        "previewImage" : "https://raw.githubusercontent.com/OracleUniverse/apex-tree-select/main/Preview.png"
+        "previewImage" : "https://raw.githubusercontent.com/OracleUniverse/apex-tree-select/main/Preview.gif"
       }
     }
   }
 
 }
+
