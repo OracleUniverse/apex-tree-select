@@ -1,7 +1,7 @@
 {
-  "name" : "Apex Tree Select",
+  "name" : "APEX Tree Select",
   "version" : "1.0",
-  "description" : "Apex Tree Select is an Oracle APEX region plug-in that provides a tri-state checkbox tree with client/server search, toolbar controls, and Universal Theme integration.",
+  "description" : "APEX Tree Select is an Oracle APEX region plug-in that provides a tri-state checkbox tree with client/server search, toolbar controls, and Universal Theme integration.",
   "keywords" : ["tree", "checkbox", "hierarchy", "faceted search", "apex"],
   "homepage" : "https://github.com/OracleUniverse/apex-tree-select",
   "bugs" : {
@@ -31,4 +31,5 @@
       }
     }
   }
+
 }
